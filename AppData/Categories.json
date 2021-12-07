@@ -1,0 +1,174 @@
+{
+    "title": "Categories",
+    "children" :[
+        {
+            "title": "Complete Bike",
+            "children" : [
+                {
+                    "title" : "BMX",
+                    "children" : [
+                        {
+                            "title" : "Saddle1",
+                        },
+                        {
+                            "title" : "Seat Posts1",
+                        },
+                        {
+                            "title" : "Mud-Guard1",
+                        },
+                        {
+                            "title" : "Stickers1",
+                        },
+                        {
+                            "title" : "Frame Guard1",
+                        },
+                        {
+                            "title" : "Lubricunt1",
+                        },
+                    ]
+                },
+                {
+                    "title" : "Children",
+                },
+                {
+                    "title" : "Electric Bikes",
+                },
+                {
+                    "title" : "Folding Bikes",
+                },
+                {
+                    "title" : "Gravel Bikes",
+                },
+                {
+                    "title" : "Hybrid",
+                },
+                {
+                    "title" : "MTB Full-Suspension",
+                },
+                {
+                    "title" : "MTB Hardtail",
+                },
+                {
+                    "title" : "Trishawl",
+                },
+            ]
+        },
+        {
+            "title": "Forks & Suspension",
+            "children" : [
+                {
+                    "title" : "Forks",
+                    "children" : [
+                        {
+                            "title" : "Some FOrks",
+                            "children" : [
+                                {
+                                    "title" : "Other Forks",
+                                },
+                                {
+                                    "title" : "Suspension",
+                                },
+                            ]
+                        },
+                        {
+                            "title" : "Suspension 2",
+                        },
+                    ]
+                },
+                {
+                    "title" : "Suspension 3",
+                },
+            ]
+        },
+        {
+            "title": "Frames",
+            "children" : [
+                {
+                    "title" : "Aluminium",
+                },
+                {
+                    "title" : "Carbon",
+                },
+            ]
+        },
+        {
+            "title": "Wheel & Tyres",
+            "children" : [
+                {
+                    "title" : "Tyres",
+                },
+                {
+                    "title" : "Rim",
+                },
+                {
+                    "title" : "Wheel",
+                },
+            ]
+        },
+        {
+            "title": "Brakes",
+            "children" : [
+                {
+                    "title" : "Normal",
+                },
+                {
+                    "title" : "Hydralic",
+                },
+            ]
+        },
+        {
+            "title": "Components",
+            "children" : [
+                {
+                    "title" : "Saddle",
+                },
+                {
+                    "title" : "Seat Posts",
+                },
+                {
+                    "title" : "Mud-Guard",
+                },
+                {
+                    "title" : "Stickers",
+                },
+                {
+                    "title" : "Frame Guard",
+                },
+                {
+                    "title" : "Lubricunt",
+                },
+            ]
+        },
+        {
+            "title": "Accessories",
+            "children" : [
+                {
+                    "title" : "Lights",
+                },
+                {
+                    "title" : "Helmet",
+                },
+                {
+                    "title" : "Water Bootles",
+                },
+                {
+                    "title" : "Speed Meter",
+                },
+            ]
+        },
+        {
+            "title": "Protection & Footwear`",
+            "children" : [
+                {
+                    "title" : "Shoes",
+                },
+                {
+                    "title" : "Gloves",
+                },
+                {
+                    "title" : "Protection Gears",
+                },
+            ]
+        },
+    ]
+}

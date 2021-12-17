@@ -14,13 +14,13 @@ struct PersonDetailView: View {
     var body: some View {
         Group {
             Section{
-                if let url = personViewModel.person.photoUrl {
+                if let url = personViewModel.photoUrl {
                     PersonImageView(url, .big)
                 }
             }
             Section{
-                Text("User Name").badge(personViewModel.person.userName)
-                Text("Email").badge(personViewModel.person.email)
+                Text("User Name").badge(personViewModel.name)
+                Text("Email").badge(personViewModel.email)
             }
         }
     }

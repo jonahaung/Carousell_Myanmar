@@ -13,7 +13,7 @@ struct TapToPushViewStyle: ViewModifier {
     
     func body(content: Content) -> some View {
         return NavigationLink(destination: destination) {
-            content
+            content.font(.Serif())
         }
     }
 }

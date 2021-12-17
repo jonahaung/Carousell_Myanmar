@@ -11,42 +11,48 @@ struct DoubleColGrid: View {
     
     private let itemMenu: ItemMenu
     @StateObject private var datasource: ItemsDatasource
+    
     @Environment(\.isSearching) private var isSearching
     
-    init(_ itemMenu: ItemMenu) {
-        self.itemMenu = itemMenu
-        _datasource = StateObject(wrappedValue: AppBackendManager.shared.itemBackendManager(for: itemMenu))
+    init(_ _itemMenu: ItemMenu) {
+        itemMenu = _itemMenu
+        _datasource = StateObject(wrappedValue: AppBackendManager.shared.itemBackendManager(for: _itemMenu))
     }
     
-    private var threeColumnGrid = [GridItem(.flexible()), GridItem(.flexible())]
+    private var twoColumnGrid = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
-        LazyVGrid(columns: threeColumnGrid) {
-            ForEach(datasource.itemViewModels) { itemViewModel in
-                DoubleColGridCell(itemViewModel: itemViewModel)
+        LazyVGrid(columns: twoColumnGrid) {
+            ForEach(datasource.itemViewModels) {
+                DoubleColGridCell(itemViewModel: $0)
             }
             SingleAxisGeometryReader { width in
                 footer
-                    .frame(width: width, height: width * 1.5, alignment: .center)
+                    .frame(minWidth: width, minHeight: width * PosterStyle.aspectRatio)
             }
+            
+            
         }
+        .overlay(isSearching ? SearchView().anyView : EmptyView().anyView)
         .insetGroupSectionStyle(10)
+        .foregroundStyle(.primary)
         .redacted(reason: !datasource.hasLoaded ? .placeholder : [])
-        .alert(item: $datasource.errorAlert) { Alert(alertObject: $0) }
+        .confirmationAlert($datasource.errorAlert)
         .task {
             datasource.loadData()
         }
-        .overlay(isSearching ? SearchView().anyView : EmptyView().anyView)
     }
     
     private var footer: some View {
         Group {
             if datasource.hasMoreData {
-                 PagnitionProgressView {
+                PagnitionProgressView {
+                    datasource.loadData()
+                }.onTapGesture {
                     datasource.loadData()
                 }
             }else {
-                Text("\(datasource.itemViewModels.count) items")
+                Text("\(datasource.itemViewModels.count) items").italic().foregroundColor(.tertiaryLabel)
             }
         }
     }

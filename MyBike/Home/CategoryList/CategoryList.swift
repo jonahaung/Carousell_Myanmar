@@ -15,7 +15,7 @@ struct CategoryList: View {
         OutlineGroup(Category.categories, children: \.children) { category in
             if category.children == nil {
                 Text(category.title) .foregroundColor(.secondary)
-                    .tapToPushItemsList(.search(.Category(category)))
+                    .tapToPushItemsList(.search([.Category(category)]))
             } else {
                 Text(category.title)
             }

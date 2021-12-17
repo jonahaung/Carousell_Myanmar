@@ -16,13 +16,13 @@ struct ItemSectionTwo: View {
             HStack {
                 if let parent = itemViewModel.item.category.parentNode {
                     Text(parent.title)
-                        .tapToPushItemsList(.search(.Category(parent)))
+                        .tapToPushItemsList(.search([.Category(parent)]))
                 } else {
                     Text("Category")
                 }
                 Spacer()
                 Text(itemViewModel.item.category.title)
-                    .tapToPushItemsList(.search(.Category(itemViewModel.item.category)))
+                    .tapToPushItemsList(.search([.Category(itemViewModel.item.category)]))
             }
             Divider()
             HStack {

@@ -6,72 +6,16 @@
 //
 
 import Foundation
-import Firebase
 import FirebaseFirestore
 
-enum ItemMenu: Identifiable {
-    
-    enum SearchType: Hashable, Equatable {
-        
-        enum AddressType {
-            case state(String)
-            case township(String)
-            
-            var description: String {
-                switch self {
-                case .state(let string):
-                    return string
-                case .township(let string):
-                    return string
-                }
-            }
-        }
-        static func == (lhs: ItemMenu.SearchType, rhs: ItemMenu.SearchType) -> Bool {
-            return lhs.description == rhs.description
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(description)
-        }
-        
-        case Title(String)
-        case Keywords([String])
-        case Category(Category)
-        case Condition(Item.Condition)
-        case Seller(String)
-        case UserItem(Person)
-        case Similier(Item)
-        case Address(AddressType)
-        
-        var description: String {
-            switch self {
-            case .Title(let string):
-                return string.uppercased()
-            case .Keywords(_):
-                return "keywords"
-            case .Category(let category):
-                return category.title.uppercased()
-            case .Condition(let condition):
-                return condition.description
-            case .Seller(let string):
-                return "more from \(string)"
-            case .UserItem(let person):
-                return person.userName
-            case .Similier(_):
-                return "Similier Items"
-            case .Address(let type):
-                return type.description
-            }
-        }
-    }
-    
+enum ItemMenu {
 
-    var id: ItemMenu { return self }
-    
     case suggessted, popular, mostViewed, favourites, seenItems, category
-    case search(SearchType)
-    
-    func title() -> String {
+    case search([SearchType])
+}
+
+extension ItemMenu {
+    var title: String {
         switch self {
         case .suggessted:
             return "Suggessted"
@@ -86,21 +30,51 @@ enum ItemMenu: Identifiable {
         case .seenItems:
             return "Seen"
         case .search(let searchType):
-            return searchType.description
+            return searchType.map{$0.description}.joined(separator: " ")
         }
     }
 }
 
-extension ItemMenu: Equatable { }
+extension ItemMenu {
+    
+    func apply(for query: inout Query) {
+        switch self {
+        case .suggessted:
+            query = query.order(by: "dateAdded", descending: true)
+        case .popular:
+            query = query.order(by: "favourites.count", descending: true)
+        case .mostViewed:
+            query = query.order(by: "views.count", descending: true)
+        case .favourites:
+            if let uid = AuthenticationService.shared.personViewModel?.id {
+                query = query.whereField("favourites.uids", arrayContains: uid)
+            }
+        case .seenItems:
+            if let uid = AuthenticationService.shared.personViewModel?.id {
+                query = query.whereField("views.uids", arrayContains: uid)
+            }
+        case .category:
+            break
+        case .search(let searchTypes):
+            searchTypes.forEach{
+                $0.apply(for: &query)
+            }
+        }
+    }
+}
 
-extension ItemMenu: Hashable {
+extension ItemMenu: Identifiable {
+    var id: String { return title }
+}
+
+extension ItemMenu: Equatable, Hashable {
 
     func hash(into hasher: inout Hasher) {
         switch self {
         case .search(let searchType):
-            hasher.combine(searchType.description)
+            hasher.combine(searchType.map{ $0.id }.joined())
         default:
-            break
+            hasher.combine(title)
         }
     }
 }

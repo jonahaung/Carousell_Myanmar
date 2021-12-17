@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import LoremSwiftum
 
 struct ItemCommentsView: View {
     
@@ -25,6 +24,7 @@ struct ItemCommentsView: View {
         }
         .navigationBarTitle(Text("Comments"))
         .navigationBarItems(trailing: navTrailing)
+        
     }
     
     private var navTrailing: some View {

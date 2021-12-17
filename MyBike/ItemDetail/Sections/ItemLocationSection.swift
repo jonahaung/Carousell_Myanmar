@@ -10,8 +10,7 @@ import MapKit
 
 struct ItemLocationSection: View {
     
-    @StateObject var itemViewModel: ItemViewModel
-    @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
+    @ObservedObject var itemViewModel: ItemViewModel
     
     @State private var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     @State private var snapshot: UIImage?
@@ -21,16 +20,18 @@ struct ItemLocationSection: View {
             if let snapshot = snapshot {
                 Image(uiImage: snapshot)
                     .resizable()
+                    .cornerRadius(5)
                     .tapToPush(MapView(coordinate: coordinate).anyView)
             }else {
                 EmptyView()
             }
             HStack {
-                Text(itemViewModel.item.address.township)
-                    .tapToPushItemsList(.search(.Address(.township(itemViewModel.item.address.township))))
+                let address = itemViewModel.item.address
+                Text(address.township)
+                    .tapToPushItemsList(.search([.Address(.township(address.township))]))
                 Spacer()
-                Text(itemViewModel.item.address.state)
-                    .tapToPushItemsList(.search(.Address(.state(itemViewModel.item.address.state))))
+                Text(address.state)
+                    .tapToPushItemsList(.search([.Address(.state(address.state))]))
             }.padding()
         }
         .task {
@@ -40,8 +41,11 @@ struct ItemLocationSection: View {
     }
 
     private func getLocation() {
+        guard snapshot == nil, coordinate.latitude == 0 else { return }
+        print("location")
         let address = itemViewModel.item.address
-        let addressText = "\(address.township), \(address.state)"
+        let addressText = "\(address.township), \(address.state), Myanmar"
+        
         getLocation(from: addressText) { location in
             if let location = location {
                 DispatchQueue.main.async {
@@ -70,9 +74,9 @@ struct ItemLocationSection: View {
         
         let options = MKMapSnapshotter.Options()
 
-        options.region = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
+        options.region = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
         options.scale = UIScreen.main.scale
-
+//        options.mapType = .hybridFlyover
         options.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width / 2)
         options.showsBuildings = true
 

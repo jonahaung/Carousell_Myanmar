@@ -10,11 +10,13 @@ import SwiftUI
 struct SellButtonView: View {
     
     var body: some View {
-        Image(systemName: "plus.circle.fill")
+        Image(systemName: "plus")
             .resizable()
-            .frame(width: 44, height: 44)
-            .background(Circle().fill(Color.white))
-            .zIndex(5)
+            .frame(width: 25, height: 25)
+            .foregroundColor(.white)
+            .zIndex(3)
+            .padding(12)
+            .background(Circle().fill(Color.accentColor))
             .padding()
             .tapToPush(SellView().anyView)
     }

@@ -10,114 +10,112 @@ import MapKit
 
 struct SellView: View {
     
-    @StateObject private var itemSeller = ItemSeller()
-    @EnvironmentObject var authenticationService: AuthenticationService
+    enum Field {
+        case title, price, description, phoneNumber
+    }
+    @FocusState private var focusedField: Field?
     
-
+    @EnvironmentObject var authenticationService: AuthenticationService
+    @StateObject private var itemSeller = ItemSeller()
+    
     var body: some View {
-        Form {
-            Section {
+        ZStack(alignment: .bottomTrailing) {
+            Form {
                 SellImagesSection(itemSeller: itemSeller)
-                    .listRowInsets(EdgeInsets())
-                Button.init("Reset Images", action: {
-                    itemSeller.sellingImages.removeAll()
-                })
-            }
-            Section {
-                Text(itemSeller.category.title)
-                    .tapToPush(CategoryPickerView(category: $itemSeller.category).anyView)
+                Section {
+                    FormCell(text: "Category", rightView: Text(itemSeller.category.title).anyView)
+                        .tapToPush(CategoryPickerView(category: $itemSeller.category).anyView)
+                    
+                    FormCell(text: "Title      ", rightView: TextField("Polygon Siskiu D7 2022 M 29er", text: $itemSeller.title).anyView)
+                        .autocapitalization(.words)
+                        .focused($focusedField, equals: .title)
+                    
+                    FormCell(text: "Price      ", rightView: TextField("$0000", text: $itemSeller.price).anyView)
+                        .keyboardType(.numbersAndPunctuation)
+                        .focused($focusedField, equals: .price)
+                }
                 
-                TextField("Listing Title", text: $itemSeller.title)
-                    .autocapitalization(.words)
-                TextField("Price $", text: $itemSeller.price)
-                    .keyboardType(.decimalPad)
-            }
-            
-            Section {
-                Picker("Condition", selection: $itemSeller.condition) {
-                    ForEach(Item.Condition.allCases) {
-                        Text($0.description)
-                            .foregroundColor(.accentColor)
-                    }
-                }
-                Picker("Dealing Type", selection: $itemSeller.dealType) {
-                    ForEach(DealType.allCases) {
-                        Text($0.description)
-                            .foregroundColor(.accentColor)
-                    }
-                }
-            }
-            
-            Section {
-                Text("Description")
-                    .foregroundColor(.tertiaryLabel)
-                DynamicHeightTextView(text: $itemSeller.detailText)
-                    .listRowSeparator(.hidden)
-            }
-            
-            SellAddressSection(address: $itemSeller.address)
-            
-            Section{
-                TextField("Phone Number", text: .constant(""))
-                    .textContentType(.telephoneNumber)
-                    .keyboardType(.phonePad)
-            }
-            
-            Section {
-                Text("Submit").formSubmitButtonStyle(.accentColor).onTapGesture {
-                    itemSeller.errorAlert = AlertObject(title: "Are you sure to publish this item?", message: nil, action: {
-                        if let person = authenticationService.person {
-                            itemSeller.publish(person: person)
+                Section {
+                    Picker("Condition", selection: $itemSeller.condition) {
+                        ForEach(Item.Condition.allCases) {
+                            Text($0.description)
+                                .font(.Serif())
+                                .foregroundStyle(.primary)
                         }
-                    })
-                }
-            }.listRowInsets(EdgeInsets())
-        }
-        .sheet(item: $itemSeller.fullScreenType, onDismiss: {
-        }, content: { type in
-            switch type {
-            case .imagesPicker:
-                ImagePickerMultiple{ images in
-                    for image in images {
-                        itemSeller.sellingImages.append(SellingImage(image: image))
                     }
-                }.edgesIgnoringSafeArea(.all)
+                    .foregroundStyle(.secondary)
+                    
+                    Picker("Dealing Type", selection: $itemSeller.dealType) {
+                        ForEach(Item.DealType.allCases) {
+                            Text($0.description)
+                                .font(.Serif())
+                                .foregroundStyle(.primary)
+                        }
+                    }
+                    .foregroundStyle(.secondary)
+                }
+                
+                Section {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Description")
+                            .foregroundColor(.secondary)
+                        
+                        TextEditor(text: $itemSeller.detailText)
+                            .font(.Serif())
+                            .listRowSeparator(.hidden)
+                            .focused($focusedField, equals: .description)
+                    }
+                }
+                
+                
+                Section(footer: submitButton) {
+                    FormCell(text: "State", rightView: SellAddressSection(address: $itemSeller.address).anyView)
+                        .tapToPush(regionPicker.anyView)
+                    
+                    FormCell(text: "Phone Numnber", rightView: TextField("Phone Number", text: .constant("")).anyView)
+                        .textContentType(.telephoneNumber)
+                        .keyboardType(.phonePad)
+                        .focused($focusedField, equals: .phoneNumber)
+                }
             }
-        })
+            
+            if focusedField != nil {
+                Button {
+                    hideKeyboard()
+                } label: {
+                    Image(systemName: "chevron.down.circle.fill")
+                        .padding()
+                }
+            }
+        }
         .navigationBarTitle("Sell")
         .navigationBarItems(trailing: publishButton)
-        .alert(item: $itemSeller.errorAlert) { Alert(alertObject: $0) }
+        .confirmationAlert($itemSeller.errorAlert)
     }
     
+    private var regionPicker: some View {
+        RegionPicker(address: $itemSeller.address)
+    }
+    private var submitButton: some View {
+        Button {
+            hideKeyboard()
+            itemSeller.errorAlert = AlertObject(buttonText: "Publish this item", action: {
+                if let person = authenticationService.personViewModel?.person {
+                    itemSeller.publish(person: person)
+                }
+            })
+        } label: {
+            Text("Submit").formSubmitButtonStyle(.accentColor)
+        }
+    }
     
     private var publishButton: some View {
         HStack {
-            progressView
-            Button("Publish") {
-                itemSeller.errorAlert = AlertObject(title: "Are you sure to publish this item?", message: nil, action: {
-                    if let person = authenticationService.person {
-                        itemSeller.publish(person: person)
-                    }
-                })
+            ProgressView().opacity(itemSeller.showLoading ? 1 : 0)
+            Button("Reset") {
+                hideKeyboard()
             }
         }
-    }
-    
-    private func check() {
-        guard !itemSeller.sellingImages.isEmpty else {
-            itemSeller.fullScreenType = .imagesPicker
-            return
-        }
-    }
-    
-    var progressView: some View {
-        ProgressView().opacity(itemSeller.showLoading ? 1 : 0)
-    }
-}
-
-extension Alert: Identifiable {
-    public var id: String {
-        return UUID().uuidString
     }
     
 }

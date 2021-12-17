@@ -6,62 +6,53 @@
 //
 
 import SwiftUI
-import LoremSwiftum
 import Firebase
 import FirebaseFirestore
 import FirebaseStorage
 
 class ItemSeller: ObservableObject {
     
-    enum FullScreenType: Identifiable {
-        var id: FullScreenType { return self }
-        case imagesPicker
-    }
-    
     @Published var sellingImages = [SellingImage]()
     @Published var showLoading = false
-    @Published var fullScreenType: FullScreenType?
-    @Published var dealType = DealType.Sell
+    @Published var dealType = Item.DealType.Sell
     @Published var category = Category.none
     @Published var condition = Item.Condition.none
     @Published var title = ""
     @Published var detailText = ""
     @Published var price = ""
     @Published var address = Item.Address.none
-    @Published var errorAlert: AlertObject?
+    @Published var errorAlert: AlertObject = AlertObject("", show: false)
     
     private let repository = ItemRepository()
 
     func publish(person: Person) {
         guard sellingImages.count > 0 else {
-            errorAlert = AlertObject(title: "Photos are empty", message: "Please upload at least one photo of the selling item", action: {
-                self.fullScreenType = .imagesPicker
-            })
+            errorAlert = AlertObject("Photos are empty")
             return
         }
         if title.isEmpty {
-            errorAlert = AlertObject(title: "Title shouldn't be empty")
+            errorAlert = AlertObject("Title shouldn't be empty")
             return
         }
         if !category.isSelected {
-            errorAlert = AlertObject(title: "Category is not selected yet")
+            errorAlert = AlertObject("Category is not selected yet")
             return
         }
         if !condition.isSelected {
-            errorAlert = AlertObject(title: "Condition is not selected yet")
+            errorAlert = AlertObject("Condition is not selected yet")
             return
         }
         
         if detailText.isEmpty {
-            errorAlert = AlertObject(title: "Detail text shouldn't be empty")
+            errorAlert = AlertObject("Detail text shouldn't be empty")
             return
         }
         if price.isEmpty {
-            errorAlert = AlertObject(title: "Price shouldn't be empty")
+            errorAlert = AlertObject("Price shouldn't be empty")
             return
         }
         if address.isEmpty {
-            errorAlert = AlertObject(title: "Location shouldn't be empty")
+            errorAlert = AlertObject("Location shouldn't be empty")
             return
         }
         showLoading = true
@@ -115,7 +106,7 @@ class ItemSeller: ObservableObject {
         self.repository.add(item) {
             DispatchQueue.main.async {
                 self.showLoading = false
-                self.errorAlert = AlertObject(title: "Item Added Successfully")
+                self.errorAlert = AlertObject("Item Added Successfully")
             }
         }
         

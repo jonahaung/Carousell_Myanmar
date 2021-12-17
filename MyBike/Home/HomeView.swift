@@ -18,7 +18,7 @@ struct HomeView: View {
             }
         }
     }
-
+    @EnvironmentObject var appBackendManager: AppBackendManager
     @State private var homeMode = HomeMode(rawValue: UserDefaultManager.shared.homeMode) ?? .grid
     @StateObject private var searchManager = SearchViewManager()
     
@@ -35,29 +35,28 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(homeMode == .list ? .inline : .automatic)
             .navigationBarItems(leading: navLeadingItems, trailing: navTrailingItems)
             .overlay(alignment: .bottomTrailing) { SellButtonView() }
-            .environmentObject(searchManager)
         }
         .navigationViewStyle(.stack)
+        .environmentObject(searchManager)
         .searchable(text: $searchManager.searchText, placement: .navigationBarDrawer(displayMode: homeMode == .list ? .always : .automatic), prompt: "Search")
-        .onSubmit(of: .search) {
-            searchManager.search()
-        }
-        
     }
     
     private var navLeadingItems: some View {
         Button {
-            
+            AppBackendManager.shared.refreshAllData()
         } label: {
             Image(systemName: "cart.fill")
         }
-
+        
     }
     
     private var navTrailingItems: some View {
         HStack {
             Button(action: {
-                homeMode = self.homeMode == .list ? .grid : .list
+                withAnimation {
+                    homeMode = self.homeMode == .list ? .grid : .list
+                }
+
                 UserDefaultManager.shared.homeMode = homeMode.rawValue
             }) {
                 Image(systemName: self.homeMode.icon)

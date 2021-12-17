@@ -18,23 +18,22 @@ struct CommentWriterView: View {
     
     
     var body: some View {
-        Group {
-            GeometryReader { geo in
-                Form {
-                    Section("Type message") {
-                        DynamicHeightTextView(text: $text)
-                            .frame(minHeight: geo.frame(in: .global).size.width/2)
-                            
-                        submitButton
-                    }
+        VStack {
+            Spacer()
+            Form {
+                Section("Type message"){
+                    TextEditor(text: $text)
+                    
+                    submitButton
                 }
             }
         }
+        .foregroundStyle(.primary)
     }
     
     private var submitButton: some View {
         Button {
-            if !text.isEmpty, let person = authenticationService.person {
+            if !text.isEmpty, let person = authenticationService.personViewModel?.person {
                 let comment = Item.Comment(text, person)
                 itemViewModel.addComments(comment: comment) {
                     presentationMode.wrappedValue.dismiss()

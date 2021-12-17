@@ -11,63 +11,58 @@ struct SearchView: View {
     
     @EnvironmentObject var searchManager: SearchViewManager
     
-    enum SheetType: Identifiable {
-        var id: SheetType { return self }
-        case categoryPicker
-    }
-    
-    @State private var sheetType: SheetType?
-    
     var body: some View {
         List {
             if searchManager.searchText.isEmpty {
                 Section {
-                    Text("Category")
-                        .badge(searchManager.category.title)
-                        .onTapGesture {
-                            sheetType = .categoryPicker
-                        }
+                    HStack {
+                        Text("Category")
+                        Spacer()
+                        Text(searchManager.category.title).tapToPresent(NavigationView{CategoryPickerView(category: $searchManager.category)}.anyView, false)
+                    }
                     filterMenu
                 }
             }
             
-            Section {
-                ForEach(searchManager.searchResults) { itemViewModel in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(itemViewModel.item.title.capitalized)
-                                .textStyle(style: .title_regular)
-                            Spacer()
-                            Text(itemViewModel.item.seller.userName)
-                                .font(.footnote)
-                                .foregroundColor(.secondary)
-                        }
-                        HStack{
-                            Text(itemViewModel.item.category.title)
-                                .textStyle(style: .link_small)
-                                .foregroundColor(.secondary)
-                        }
-                            
+            if !searchManager.completionResults.isEmpty {
+                Section("Results") {
+                    ForEach(searchManager.completionResults) { vm in
+                        SearchCompletionCell(itemViewModel: vm)
+                            .onTapGesture {
+                                searchManager.search(.search([.Title(vm.item.title)]))
+                                searchManager.searchText = vm.item.title.capitalized
+                            }
                     }
-                    .padding(.vertical, 5)
-                    .tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
-                    .accentColor(.primary)
+                }
+            }
+            
+            if !searchManager.categories.isEmpty {
+                Section("Categories") {
+                    ForEach(searchManager.categories) { category in
+                        Text(category.title.capitalized).fontWeight(.medium).badge(category.parentNode?.title ?? "").onTapGesture {
+                            searchManager.search(.search([.Category(category)]))
+                            searchManager.searchText = category.title.capitalized
+                        }
+                    }
+                }
+            }
+            
+            Section {
+                ForEach(searchManager.finalResults) {
+                    SearchResultCell(itemViewModel: $0)
                 }
             }
         }
-        .sheet(item: $sheetType, content: { type in
-            switch type {
-            case .categoryPicker:
-                CategoryPickerView(category: $searchManager.category)
-            }
-        })
+        .refreshable {
+            searchManager.searchText = String()
+        }
     }
     
     private var filterMenu: some View {
-        Picker("", selection: $searchManager.searchFilter) {
-            ForEach(SearchViewManager.SearchFilter.allCases) { filter in
-                Text("\(filter.rawValue)").tag(filter)
+        Picker("Filter", selection: $searchManager.searchMenu) {
+            ForEach(SearchViewManager.SearchMenu.allCases) { menu in
+                Text("\(menu.rawValue)").tag(menu)
             }
-        }.pickerStyle(.segmented)
+        }.pickerStyle(.menu)
     }
 }

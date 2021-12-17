@@ -13,8 +13,9 @@ class AuthenticationService: ObservableObject {
     
     static let shared = AuthenticationService()
     
-    @Published var person: Person?
-    var isLoggedIn: Bool { person != nil }
+    @Published var personViewModel: PersonViewModel?
+
+    var isLoggedIn: Bool { personViewModel != nil }
     
     private var authenticationStateHandler: AuthStateDidChangeListenerHandle?
     private var personListener: ListenerRegistration?
@@ -34,7 +35,7 @@ class AuthenticationService: ObservableObject {
                     self.addPersonListener(user: user)
                 } else {
                     self.personListener?.remove()
-                    self.person = nil
+                    self.personViewModel = nil
                 }
             }
     }
@@ -43,10 +44,21 @@ class AuthenticationService: ObservableObject {
         personListener?.remove()
         personListener = Firestore.firestore().collection("users").document(user.uid)
             .addSnapshotListener(includeMetadataChanges: true) { (snap, err) in
-                let person = try? snap?.data(as: Person.self)
-                DispatchQueue.main.async {
-                    self.person = person
+                do {
+                    if let person = try snap?.data(as: Person.self) {
+                        let personViewModel = PersonViewModel(person: person)
+                        DispatchQueue.main.async {
+                            self.personViewModel = personViewModel
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            self.personViewModel = nil
+                        }
+                    }
+                }catch {
+                    print(error.localizedDescription)
                 }
+                
             }
     }
     

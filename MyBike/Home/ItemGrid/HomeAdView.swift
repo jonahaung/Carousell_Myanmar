@@ -28,8 +28,7 @@ struct HomeAdView: View {
             .padding()
             
         }
-        .insetGroupSectionStyle(20)
-        .background(Color.steam_yellow)
+        .insetGroupSectionStyle(30)
     }
 }
 

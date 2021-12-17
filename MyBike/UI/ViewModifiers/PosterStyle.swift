@@ -10,43 +10,41 @@ import SwiftUI
 
 struct PosterStyle: ViewModifier {
     
+    static let aspectRatio = 1.4
+    
     enum Size {
         
         case tinyPersonImage, small, medium, big
         case custom(CGFloat)
         
-        static let screenWidth = UIScreen.main.bounds.size.width
-        
         var width: CGFloat {
             switch self {
             case .tinyPersonImage: return 20
-            case .small: return 60
-            case .medium: return 140
-            case .big: return PosterStyle.Size.screenWidth
-                case .custom(let x): return x }
+            case .small: return 80
+            case .medium: return 120
+            case .big: return 200
+            case .custom(let x): return x }
         }
         
         var height: CGFloat {
-            switch self {
-            case .tinyPersonImage: return 20
-            case .small: return 60
-            case .medium: return 140
-            case .big: return PosterStyle.Size.screenWidth
-            case .custom(let x): return x
-            }
+            return width * PosterStyle.aspectRatio
+        }
+        
+        var cgSize: CGSize {
+            CGSize(width: width, height: height)
         }
     }
     
-    let size: Size
+    let posterSize: Size
     
     func body(content: Content) -> some View {
         content
-            .frame(width: size.width, height: size.height)
+            .frame(maxWidth: posterSize.width, maxHeight: posterSize.height)
     }
 }
 
 extension View {
-    func posterStyle(size: PosterStyle.Size) -> some View {
-        return ModifiedContent(content: self, modifier: PosterStyle(size: size))
+    func posterStyle(posterSize: PosterStyle.Size) -> some View {
+        return ModifiedContent(content: self, modifier: PosterStyle(posterSize: posterSize))
     }
 }

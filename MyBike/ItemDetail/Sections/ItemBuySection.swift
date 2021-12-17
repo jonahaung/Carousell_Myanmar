@@ -12,13 +12,29 @@ struct ItemBuySection: View {
     @StateObject var itemViewModel: ItemViewModel
     
     var body: some View {
-        Group {
-            Button {
-                
-            } label: {
-                Text("Get this item")
-                    .formSubmitButtonStyle(.pink)
-            }
-        }.insetGroupSectionStyle()
+        HStack {
+            getButton
+            chatButton
+        }
+        .padding(.vertical)
+    }
+    
+    private var getButton: some View {
+        Button {
+            
+        } label: {
+            Text("Get this item")
+                .formSubmitButtonStyle(.pink)
+                .padding(.horizontal)
+        }
+    }
+    private var chatButton: some View {
+        Button {
+            
+        } label: {
+            Text("Start Chat")
+                .formSubmitButtonStyle(.mint)
+                .padding(.horizontal)
+        }
     }
 }

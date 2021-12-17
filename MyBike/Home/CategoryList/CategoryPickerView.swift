@@ -16,17 +16,19 @@ struct CategoryPickerView: View {
         List {
             OutlineGroup(Category.categories, children: \.children) { category in
                 if category.children == nil {
-                    Button {
-                        self.category = category
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Text(category.title)
-                    }.disabled(category == self.category)
+                    Text(category.title).foregroundColor(.secondary)
+                        .onTapGesture {
+                            self.category = category
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                        .disabled(category == self.category)
                 } else {
                     Text(category.title)
                 }
             }
         }
+        .listStyle(.insetGrouped)
+        .textStyle(style: .title_regular)
         .navigationTitle("Categories")
     }
     

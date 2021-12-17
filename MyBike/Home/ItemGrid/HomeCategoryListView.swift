@@ -8,27 +8,33 @@
 import SwiftUI
 
 struct HomeCategoryListView: View {
+    
     var body: some View {
-        OutlineGroup(Category.categories, children: \.children) { category in
-            VStack(alignment: .leading, spacing: 0) {
-                Group{
-                    if category.children == nil {
-                        Text(category.title)
-                            .tapToPushItemsList(.search(.Category(category)))
-                            .foregroundColor(.secondary)
-                    } else {
-                        Text(category.title)
-                            .foregroundColor(.primary)
+        VStack(alignment: .leading, spacing: 0) {
+            
+            Text("Categories").textStyle(style: .title_title).padding(.horizontal)
+            
+            OutlineGroup(Category.categories, children: \.children) { category in
+                VStack(alignment: .leading, spacing: 0) {
+                    Group{
+                        if category.children == nil {
+                            Text(category.title)
+                                .tapToPushItemsList(.search([.Category(category)]))
+                                .foregroundColor(.secondary)
+                        } else {
+                            Text(category.title.uppercased())
+                                .foregroundColor(.primary)
+                        }
                     }
+                    .padding(.vertical, 4)
+                    Divider()
+                        .hidden()
                 }
-                .padding(.vertical, 6)
-                Divider()
-                    .padding(.top, 4)
+                .padding(.leading, getSpaceFor(category))
             }
-            .padding(.leading, getSpaceFor(category))
-            .font(.FHACondFrenchNC(size: 17))
+            .insetGroupSectionStyle()
+            .font(.system(size: UIFont.systemFontSize, weight: .semibold, design: .serif))
         }
-        .insetGroupSectionStyle()
     }
     
     private func getSpaceFor(_ catelogy: Category) -> CGFloat {
@@ -42,10 +48,4 @@ struct HomeCategoryListView: View {
         return space
     }
     
-}
-
-struct HomeCategoryListView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeCategoryListView()
-    }
 }

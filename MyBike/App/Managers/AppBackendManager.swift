@@ -12,25 +12,35 @@ class AppBackendManager: ObservableObject {
     
     static let shared = AppBackendManager()
     
+    @Published var alert = AlertObject("", buttonText: "", show: false)
+    
     let homeMenus = [ItemMenu.suggessted, .popular, .mostViewed, .category]
     
-    private var itemsBackendManagers = [ItemMenu: ItemsDatasource]()
+    private var itemDatasources = [ItemMenu: ItemsDatasource]()
     
     func itemBackendManager(for itemMenu: ItemMenu) -> ItemsDatasource {
-        if let x = itemsBackendManagers[itemMenu] {
-            return x
-        } else {
-            let x = ItemsDatasource(itemMenu)
-            itemsBackendManagers[itemMenu] = x
+        if let x = itemDatasources[itemMenu] {
             return x
         }
+        let x = ItemsDatasource(itemMenu)
+        itemDatasources[itemMenu] = x
+        return x
     }
     
-    @MainActor
-    func refreshAllData() {
-        homeMenus.forEach{
-            itemBackendManager(for: $0).resetData()
+    
+    func refreshAllData(_ done: @escaping (() -> Void) = {}) {
+        self.itemDatasources.map{$0.value}.forEach{ $0.resetData() }
+        done()
+    }
+    
+    func refresh(_ item: Item) {
+        itemDatasources.forEach { dic in
+            let olds = dic.value.itemViewModels
+            olds.forEach { old in
+                if old.id == item.id {
+                    old.item = item
+                }
+            }
         }
-        ImageLoaderCache.shared.loaders.removeAllObjects()
     }
 }

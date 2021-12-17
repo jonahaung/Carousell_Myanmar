@@ -23,6 +23,15 @@ struct Category: Identifiable, Codable {
     }()
     
     static var categories: [Category] { return rootNode.children ?? [] }
+    static var allValues: [Category] {
+        var results = [Category]()
+        Category.categories.forEach { cat in
+            if let children = cat.children {
+                results += children
+            }
+        }
+        return results
+    }
     
     var id: String { return title }
     let title: String

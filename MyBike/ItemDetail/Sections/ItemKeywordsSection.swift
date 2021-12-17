@@ -16,9 +16,9 @@ struct ItemKeywordsSection: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(itemViewModel.item.keywords) { keyword in
-                        RoundedBadge(text: keyword, color: .gray)
+                        RoundedBadge(text: keyword, color: Color(uiColor: .random))
                             .foregroundColor(.white)
-                            .tapToPushItemsList(.search(.Keywords(itemViewModel.item.keywords)))
+                            .tapToPushItemsList(.search([.Keywords([keyword])]))
                             
                     }
                 }.padding(.leading)

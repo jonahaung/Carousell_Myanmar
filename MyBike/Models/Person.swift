@@ -13,18 +13,19 @@ import FirebaseFirestoreSwift
 struct Person: Identifiable, Codable {
     
     @DocumentID var id: String?
-    let name: String?
-    let email: String
+    var name: String?
+    var email: String
+    var phone: String? = nil
     var photoUrl: String?
+    var hasEmailVerified: Bool? = false
+    var address: Item.Address? = Item.Address.none
     
     var userName: String {
         return "@" + (email.components(separatedBy: "@").first ?? "")
     }
 }
 
-extension Person: Hashable {
-    
-}
+
 extension Person {
     
     var documentReference: DocumentReference {

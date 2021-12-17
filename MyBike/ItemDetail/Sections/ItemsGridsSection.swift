@@ -19,39 +19,19 @@ struct ItemsGridsSection: View {
         self.posterSize = posterSize
     }
     
-    private var rows: [GridItem] { return [
-        GridItem(.adaptive(minimum: posterSize.width)),
-        GridItem(.adaptive(minimum: posterSize.width))
-    ]}
-    
+
     var body: some View {
         
         VStack(alignment: .leading) {
-            header(for: datasource.itemMenu)
+            ItemsHeaderView(datasource.itemMenu)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(datasource.itemViewModels) {
-                        ItemImageView($0.item.images.firstImage, posterSize)
-                            .cornerRadius(10)
-                            .tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
+                        ItemGridCell(itemViewModel: $0)
                     }
                 }
-            }
+            }.insetGroupSectionStyle()
         }
-        .plainGroupSectionStyle()
-        .task {
-            datasource.loadData()
-        }
-    }
-    
-    private func header(for menu: ItemMenu) -> some View {
-        HStack {
-            Text(menu.title())
-            Spacer()
-            Text("See all")
-                .textStyle(style: .link_regular)
-                .tapToPushItemsList(menu)
-        }
-        .padding(.horizontal)
+        .task { datasource.loadData()}
     }
 }

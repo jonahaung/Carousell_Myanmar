@@ -12,31 +12,20 @@ struct ItemGridCell: View {
     @ObservedObject var itemViewModel: ItemViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            ZStack(alignment: .bottomTrailing) {
-                ItemImageView(itemViewModel.item.images.firstImage, .medium)
-                    .tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
-                HStack(alignment: .bottom) {
-                    Text(itemViewModel.price)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    
-                    Image(systemName: "circle.fill")
-                        .foregroundColor(itemViewModel.item.condition.color)
-                        .imageScale(.small)
-                }
-                .padding(5)
-                
+        ZStack(alignment: .bottomTrailing) {
+            ItemImageView(itemViewModel.item.images.firstImage, .medium)
+                .tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
+                .cornerRadius(5)
+            HStack {
+                Text("$\(itemViewModel.item.price)")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white)
+                Spacer()
+                Image(systemName: "circle.fill")
+                    .foregroundColor(itemViewModel.item.condition.color)
+                    .imageScale(.small)
             }
-            Text(itemViewModel.item.title.capitalized)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
-                .padding(.horizontal, 5)
-            SellerInfoLabel(itemViewModel)
-                .font(.FHACondFrenchNC(size: 12))
-            Spacer()
+            .padding(5)
         }
-        .frame(width: PosterStyle.Size.medium.width, height: PosterStyle.Size.medium.height * 1.5)
-        .foregroundStyle(.primary)
-        .background(Rectangle().stroke(Color.quaternaryLabel, lineWidth: 0.5))
     }
 }

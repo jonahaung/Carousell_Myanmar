@@ -16,7 +16,7 @@ struct ItemViewsLabel: View {
     }
     
     var body: some View {
-        HStack(alignment: .bottom, spacing: 2) {
+        HStack(spacing: 2) {
             Image(systemName: itemViewModel.item.views.hasViewed ? "eye.fill" : "eye")
             Text("\(itemViewModel.item.views.count)")
         }.foregroundStyle(.secondary)

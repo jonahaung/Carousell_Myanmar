@@ -12,16 +12,11 @@ struct SellAddressSection: View {
     @Binding var address: Item.Address
 
     var body: some View {
-        Section {
-            HStack {
-                Text(address.township)
-                Spacer()
-                Text(address.state)
-                    .foregroundColor(.secondary)
-            }
-            .tapToPush(RegionPicker(selected: address, onPick: { address in
-                self.address = address
-            }).anyView)
+        Group {
+            Text(address.township)
+            Text(address.state)
+                .italic()
+                .foregroundStyle(.secondary)
         }
     }
 }

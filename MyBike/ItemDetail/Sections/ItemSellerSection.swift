@@ -22,25 +22,6 @@ struct ItemSellerSection: View {
                     }
                     Spacer()
                 }
-                Divider()
-                
-                Button {
-                    
-                    if let personId = itemViewModel.item.seller.id, let conversationId = ConversationInfo.conversationId(for: personId) {
-                        let msgId = UUID().uuidString
-                        let info = ConversationInfo(conversationId: conversationId, _msgId: msgId)
-                        let message = Message(id: msgId, text: "Hello")
-//                        MessageRepository.shared.add(message, conversationId: conversationId) {
-//                            MessageRepository.shared.add(info, personId: personId) {
-//                                print("DONE")
-//                            }
-//                        }
-                    
-                    }
-                } label: {
-                    Text("Message").formSubmitButtonStyle(.blue)
-                }
-
             }
         }.insetGroupSectionStyle()
     }

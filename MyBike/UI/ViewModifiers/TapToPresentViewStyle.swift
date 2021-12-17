@@ -28,7 +28,6 @@ struct TapToPresentViewStyle: ViewModifier {
                     }
             }
         }
-        .foregroundColor(.accentColor)
         .onTapGesture(perform: {
             isPresented = true
         })

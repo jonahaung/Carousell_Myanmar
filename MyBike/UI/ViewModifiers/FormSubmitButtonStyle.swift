@@ -19,7 +19,7 @@ struct FormSubmitButtonStyle: ViewModifier {
             Spacer()
         }
         .padding(7)
-        .background(backgroundColor.cornerRadius(10))
+        .background(backgroundColor.cornerRadius(8))
     }
 }
 

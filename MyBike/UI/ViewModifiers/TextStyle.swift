@@ -16,19 +16,19 @@ struct TextStyle: ViewModifier {
         var font: Font {
             switch self {
             case .title_regular:
-                return .FjallaOne(size: UIFontMetrics.default.scaledValue(for: 16))
+                return .FjallaOne(UIFontMetrics.default.scaledValue(for: 16))
             case .title_headline:
-                return .FjallaOne(size: UIFontMetrics.default.scaledValue(for: 17))
+                return .FjallaOne(UIFontMetrics.default.scaledValue(for: 17))
             case .title_footnote:
-                return .FjallaOne(size: UIFontMetrics.default.scaledValue(for: 13))
+                return .FjallaOne(UIFontMetrics.default.scaledValue(for: 13))
             case .title_title:
-                return .FjallaOne(size: UIFontMetrics.default.scaledValue(for: 21))
+                return .FjallaOne(UIFontMetrics.default.scaledValue(for: 21))
             case .link_regular:
                 return .subheadline
             case .link_small:
                 return .footnote
             case .title_caption:
-                return .FjallaOne(size: UIFontMetrics.default.scaledValue(for: 10))
+                return .FjallaOne(UIFontMetrics.default.scaledValue(for: 10))
             }
         }
         

@@ -9,9 +9,7 @@ import Foundation
 import FirebaseFirestoreSwift
 import Firebase
 import FirebaseStorage
-import LoremSwiftum
 import UIKit
-import MapKit
 import SwiftUI
 
 struct Item: Identifiable, Codable {
@@ -176,19 +174,35 @@ extension Item {
         }
         var isSelected: Bool { return self != .none }
     }
+    
+    enum DealType: Codable, CaseIterable, Identifiable {
+        var id: DealType { return self }
+        case Sell, Buy, Exchange
+        
+        var description: String {
+            return "\(self)"
+        }
+    }
+    
 }
 
 extension Item {
-
+    
     var date_added: String {
         return dateAdded.relativeString
     }
     
     static func mock() -> Item {
         let urls = [
-            "https://www.thebikesettlement.com/wp-content/uploads/2021/09/SISKIU_D7_2022-600x370.jpg",
-            "https://www.thebikesettlement.com/wp-content/uploads/2021/09/SISKIU_D7_2022-2.jpg"
+            "https://www.rodalink.com/pub/media/wysiwyg/blog/blog_2021/a_perfect_christmas_gift_cover_1.jpg",
+            "https://www.rodalink.com/pub/media/wysiwyg/promotion_SG_2021/11-12/category_banner_sgcategory_5_1.jpg",
+            "https://www.rodalink.com/pub/media/wysiwyg/promotion_SG_2021/11-12/category_banner_sgcategory_3_1.jpg",
+            "https://my-live-05.slatic.net/p/2abc64078fa32fb17d8fe93c897ab06b.jpg_200x200q90.jpg_.webp",
+            "https://my-live-05.slatic.net/p/3e167fecee78cf2d6db006f138cf5c01.jpg_200x200q90.jpg_.webp",
+            "https://sg-live-05.slatic.net/p/a6d28f7630f5e2b013501c19686d41d8.jpg_200x200q90.jpg_.webp",
+            "https://my-live-05.slatic.net/p/018f172ef8ee8030f1d878bd26ad7344.jpg_200x200q90.jpg_.webp",
         ]
+//        urls.shuffle()
         let cat = Category.categories.randomElement()!
         return Item(_id: UUID().uuidString, _title: Lorem.words(3), _category: cat, _description: Lorem.sentence, _price: 2200, _dealType: .Sell, _condition: .wellUsed, _person: Person.mock, _imageURLs: urls, _address: Address.none)
     }

@@ -16,7 +16,7 @@ struct MyBikeApp: App {
     var body: some Scene {
         WindowGroup {
             TabbarView()
-                .accentColor(.teal)
+                .accentColor(.mint)
         }
     }
 }

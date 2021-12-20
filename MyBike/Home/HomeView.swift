@@ -9,48 +9,41 @@ import SwiftUI
 
 struct HomeView: View {
     
-    enum HomeMode: Int {
-        case grid, list
-        var icon: String {
-            switch self {
-            case .list: return "square.grid.3x1.fill.below.line.grid.1x2"
-            case .grid: return "rectangle.grid.2x2.fill"
-            }
-        }
-    }
-    @EnvironmentObject var appBackendManager: AppBackendManager
     @State private var homeMode = HomeMode(rawValue: UserDefaultManager.shared.homeMode) ?? .grid
+
     @StateObject private var searchManager = SearchViewManager()
-    
+   
     var body: some View {
         NavigationView {
             Group {
                 switch homeMode {
                 case .list:
-                    HomeAsListView()
+                    HomeAsDoubleColumnGrid()
                 case .grid:
                     HomeAsGridView()
                 }
             }
+            
+            .navigationBarItems(leading: navLeadingView, trailing: NavTrailingView)
+//            .overlay(alignment: .bottomTrailing) { SellButtonView() }
             .navigationBarTitleDisplayMode(homeMode == .list ? .inline : .automatic)
-            .navigationBarItems(leading: navLeadingItems, trailing: navTrailingItems)
-            .overlay(alignment: .bottomTrailing) { SellButtonView() }
         }
         .navigationViewStyle(.stack)
         .environmentObject(searchManager)
         .searchable(text: $searchManager.searchText, placement: .navigationBarDrawer(displayMode: homeMode == .list ? .always : .automatic), prompt: "Search")
     }
     
-    private var navLeadingItems: some View {
-        Button {
-            AppBackendManager.shared.refreshAllData()
-        } label: {
-            Image(systemName: "cart.fill")
+    private var navLeadingView: some View {
+        HStack {
+//            Button {
+//                AppBackendManager.shared.refreshAllData()
+//            } label: {
+//                Image(systemName: "cart.fill")
+//            }
         }
-        
     }
     
-    private var navTrailingItems: some View {
+    private var NavTrailingView: some View {
         HStack {
             Button(action: {
                 withAnimation {
@@ -61,6 +54,17 @@ struct HomeView: View {
             }) {
                 Image(systemName: self.homeMode.icon)
             }
+        }
+    }
+}
+
+
+fileprivate enum HomeMode: Int {
+    case grid, list
+    var icon: String {
+        switch self {
+        case .list: return "square.grid.3x1.fill.below.line.grid.1x2"
+        case .grid: return "rectangle.grid.2x2.fill"
         }
     }
 }

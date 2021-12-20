@@ -10,61 +10,74 @@ import SwiftUI
 
 class ItemsDatasource: ObservableObject {
     
-    let itemMenu: ItemMenu
+    private let itemMenu: ItemMenu
     
-    @Published var itemViewModels: [ItemViewModel] = ItemViewModel.getMockData(for: 10)
+    @Published var itemViewModels: [ItemViewModel] = ItemViewModel.getMockData(for: 6)
     @Published var errorAlert: AlertObject = AlertObject(buttonText: "", show: false)
     
     @Published var hasMoreData = true
     @Published var hasLoaded = false
+    @Published var isLoading = false
     
-    var isLoading = false
-    private let backend = PaginationBackend(4)
+    private let backend = PaginationBackend(6)
     
     init(_ itemMenu: ItemMenu) {
         self.itemMenu = itemMenu
     }
     
-    @MainActor
+    deinit{
+        print("Deinit")
+    }
+}
+
+extension ItemsDatasource {
+    
     func loadData() {
         guard hasMoreData && !isLoading else { return }
         isLoading = true
-        Task {
+        
+        Task { [ weak self] in
             do {
                 let items: [Item] = try await backend.load(for: itemMenu)
-                if !self.hasLoaded {
-                    self.itemViewModels.removeAll()
-                    self.hasLoaded = true
+                let itemViewModels = await backend.getItemViewModels(items: items)
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if !self.hasLoaded {
+                        self.itemViewModels.removeAll()
+                        self.hasLoaded = true
+                    }
+                    self.itemViewModels += itemViewModels
+                    self.hasMoreData = self.backend.limit == items.count
+                    self.isLoading = false
                 }
-                
-                let new = items.map(ItemViewModel.init)
-                self.itemViewModels += new
-                self.hasMoreData = self.backend.limit == items.count
             }catch (let error as APIService.APIError) {
-                switch error {
-                case .noMoreData:
-                    self.hasMoreData = false
-                default:
-                    self.errorAlert = AlertObject(error.localizedDescription)
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    switch error {
+                    case .noMoreData:
+                        self.hasMoreData = false
+                    default:
+                        self.errorAlert = AlertObject(error.localizedDescription)
+                    }
+                    self.isLoading = false
                 }
             }
-            self.isLoading = false
         }
     }
-    
-    deinit{
-        print("\(self)")
+}
+
+
+extension ItemsDatasource {
+    func fetchData() {
+        if !hasLoaded {
+            loadData()
+        }
     }
-    
     func resetData() {
-        backend.reset()
         isLoading = false
         hasLoaded = false
         hasMoreData = true
-        itemViewModels.removeAll()
-        
-        Task {
-            await self.loadData()
-        }
+        backend.reset()
+        loadData()
     }
 }

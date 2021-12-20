@@ -19,11 +19,12 @@ struct ItemGridView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ItemsHeaderView(datasource.itemMenu)
+            ItemsHeaderView(itemMenu)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 5) {
                     ForEach(datasource.itemViewModels) {
-                        ItemGridCell(itemViewModel: $0)
+                        ItemGridCell()
+                            .environmentObject($0)
                     }
                     footer
                 }
@@ -33,12 +34,12 @@ struct ItemGridView: View {
         .padding(.top)
         .redacted(reason: !datasource.hasLoaded ? .placeholder : [])
         .confirmationAlert($datasource.errorAlert)
-        .task { datasource.loadData() }
+        .task { datasource.fetchData() }
     }
     
     private var footer: some View {
         Group {
-            if datasource.hasMoreData {
+            if datasource.hasLoaded && datasource.hasMoreData {
                 PagnitionProgressView {
                     datasource.loadData()
                 }

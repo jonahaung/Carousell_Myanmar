@@ -27,9 +27,10 @@ class AppBackendManager: ObservableObject {
         return x
     }
     
-    
     func refreshAllData(_ done: @escaping (() -> Void) = {}) {
-        self.itemDatasources.map{$0.value}.forEach{ $0.resetData() }
+        self.itemDatasources.map{$0.value}.forEach{
+            $0.resetData()
+        }
         done()
     }
     

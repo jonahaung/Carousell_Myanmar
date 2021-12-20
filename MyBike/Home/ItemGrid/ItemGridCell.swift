@@ -9,12 +9,12 @@ import SwiftUI
 
 struct ItemGridCell: View {
     
-    @ObservedObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ItemImageView(itemViewModel.item.images.firstImage, .medium)
-                .tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
+                .tapToPush(ItemDetailView().environmentObject(itemViewModel).anyView)
                 .cornerRadius(5)
             HStack {
                 Text("$\(itemViewModel.item.price)")
@@ -27,5 +27,6 @@ struct ItemGridCell: View {
             }
             .padding(5)
         }
+        .contextMenu{ ItemContextMenu().environmentObject(itemViewModel) }
     }
 }

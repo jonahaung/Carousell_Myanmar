@@ -27,7 +27,7 @@ struct SearchView: View {
             if !searchManager.completionResults.isEmpty {
                 Section("Results") {
                     ForEach(searchManager.completionResults) { vm in
-                        SearchCompletionCell(itemViewModel: vm)
+                        SearchCompletionCell().environmentObject(vm)
                             .onTapGesture {
                                 searchManager.search(.search([.Title(vm.item.title)]))
                                 searchManager.searchText = vm.item.title.capitalized
@@ -49,12 +49,10 @@ struct SearchView: View {
             
             Section {
                 ForEach(searchManager.finalResults) {
-                    SearchResultCell(itemViewModel: $0)
+                    SearchResultCell()
+                        .environmentObject($0)
                 }
             }
-        }
-        .refreshable {
-            searchManager.searchText = String()
         }
     }
     

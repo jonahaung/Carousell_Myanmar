@@ -25,7 +25,7 @@ class ItemSeller: ObservableObject {
     
     private let repository = ItemRepository()
 
-    func publish(person: Person) {
+    func publish(person: Person,_ done: @escaping () -> Void) {
         guard sellingImages.count > 0 else {
             errorAlert = AlertObject("Photos are empty")
             return
@@ -96,20 +96,28 @@ class ItemSeller: ObservableObject {
             }
         }
         group.notify(queue: .main) {
-            self.addBike(id: bikeId, urls: urls, person: person)
+            self.addBike(id: bikeId, urls: urls, person: person, done)
         }
     }
 
-    private func addBike(id: String, urls: [String], person: Person) {
+    private func addBike(id: String, urls: [String], person: Person, _ done: @escaping () -> Void) {
         let item = Item(_id: id, _title: self.title, _category: self.category, _description: self.detailText, _price: Int(self.price) ?? 0, _dealType: self.dealType, _condition: self.condition, _person: person, _imageURLs: urls, _address: address)
         
         self.repository.add(item) {
             DispatchQueue.main.async {
                 self.showLoading = false
-                self.errorAlert = AlertObject("Item Added Successfully")
+                self.errorAlert = AlertObject.init("Item published", buttonText: "Done", action: done, cancelAction: {})
             }
         }
         
+    }
+    
+    var isValidated: Bool {
+        return !sellingImages.isEmpty && category.isSelected && condition.isSelected && !title.isEmpty && !detailText.isEmpty && !price.isEmpty && !address.isEmpty
+    }
+    
+    func onClose(_ done: @escaping () -> Void) {
+        errorAlert = AlertObject("Are you sure you want to quit", buttonText: "Exit Anyway", action: done, cancelAction: {})
     }
 }
 

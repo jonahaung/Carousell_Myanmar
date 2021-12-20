@@ -30,7 +30,7 @@ class AuthenticationService: ObservableObject {
             Auth.auth().removeStateDidChangeListener(handle)
         }
         authenticationStateHandler = Auth.auth()
-            .addStateDidChangeListener { _, user in
+            .addStateDidChangeListener { auth, user in
                 if let user = user {
                     self.addPersonListener(user: user)
                 } else {
@@ -46,9 +46,9 @@ class AuthenticationService: ObservableObject {
             .addSnapshotListener(includeMetadataChanges: true) { (snap, err) in
                 do {
                     if let person = try snap?.data(as: Person.self) {
-                        let personViewModel = PersonViewModel(person: person)
+                        
                         DispatchQueue.main.async {
-                            self.personViewModel = personViewModel
+                            self.personViewModel = PersonViewModel(person: person)
                         }
                     } else {
                         DispatchQueue.main.async {

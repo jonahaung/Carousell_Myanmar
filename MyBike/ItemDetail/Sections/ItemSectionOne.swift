@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ItemSectionOne: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -21,8 +21,8 @@ struct ItemSectionOne: View {
             .textStyle(style: .title_headline)
           
             HStack{
-                ItemFavouritesLabel(itemViewModel)
-                ItemViewsLabel(itemViewModel)
+                ItemFavouritesLabel()
+                ItemViewsLabel()
                 Spacer()
                 Text(itemViewModel.item.condition.description)
                     .tapToPushItemsList(.search([.Condition(itemViewModel.item.condition)]))

@@ -19,9 +19,12 @@ struct UserProfileUpdateView: View {
                 Section(header: imageView) {
                     FormCell(text: "User Name", rightView: TextField("UserName", text: $manager.personViewModel.userName).anyView)
                     FormCell(text: "Name", rightView: TextField("Name", text: $manager.personViewModel.name).anyView)
+                    FormCell(text: "Phone", rightView: TextField("+95900000000", text: $manager.personViewModel.phone).textContentType(.telephoneNumber).anyView)
                 }
                 
                 Section {
+                    RatingRatableView().environmentObject(manager)
+                    
                     FormCell(text: "Region", rightView: SellAddressSection(address: $manager.personViewModel.address).anyView)
                         .tapToPush(RegionPicker(address: $manager.personViewModel.address).anyView)
                 }

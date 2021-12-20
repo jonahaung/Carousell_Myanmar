@@ -8,17 +8,38 @@
 import Combine
 import SwiftUI
 import Firebase
+import FirebaseFirestoreSwift
 
 class ItemViewModel: ObservableObject, Identifiable {
     
     var id: String? { return item.id }
     
     @Published var item: Item
+    @Published var person: Person
     
-    private let bikeRepository = ItemRepository()
-    
-    init(item: Item) {
+    init(item: Item, person: Person) {
         self.item = item
+        self.person = person
+    }
+}
+
+extension ItemViewModel {
+    func toggleFavourite() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        var newItem = self.item
+        var uids = newItem.favourites.uids
+        
+        if newItem.favourites.isFavourite {
+            if let index = uids.firstIndex(of: uid) {
+                uids.remove(at: index)
+            }
+        } else {
+            uids.append(uid)
+        }
+        newItem.favourites = Item.Favourites(count: uids.count, uids: uids)
+        ItemRepository.shared.update(newItem) {
+            Vibration.success.vibrate()
+        }
     }
     
     func updateViewCount() {
@@ -30,22 +51,22 @@ class ItemViewModel: ObservableObject, Identifiable {
         }
         
         newItem.views = Item.Views(count: count + 1, uids: uids)
-        bikeRepository.update(newItem)
+        ItemRepository.shared.update(newItem)
     }
     
     func addComments(comment: Item.Comment, _ completion: @escaping () -> Void) {
         var newItem = item
         let comments = newItem.comments
         newItem.comments = comments + [comment]
-        bikeRepository.update(newItem)
+        ItemRepository.shared.update(newItem)
     }
     func delete() {
-        bikeRepository.remove(item) {
+        ItemRepository.shared.remove(item) {
             
         }
     }
     
     static func getMockData(for i: Int) -> [ItemViewModel] {
-        return (0..<i).map{ _ in ItemViewModel(item: Item.mock() ) }
+        return (0..<i).map{ _ in ItemViewModel(item: Item.mock(), person: Person.mock ) }
     }
 }

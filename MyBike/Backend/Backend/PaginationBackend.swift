@@ -19,7 +19,7 @@ final class PaginationBackend: Backend {
             }else {
                 var query = collectionRef(for: T.self)
                 menu.apply(for: &query)
-                return query
+                return query.limit(to: limit)
             }
         }()
         
@@ -27,6 +27,8 @@ final class PaginationBackend: Backend {
         self.nextQuery = result.nextQuery
         return result.results
     }
+    
+    
     
     func reset() {
         nextQuery = nil

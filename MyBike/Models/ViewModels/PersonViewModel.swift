@@ -18,6 +18,7 @@ class PersonViewModel: ObservableObject, Identifiable {
     @Published var photoUrl: String
     @Published var hasEmailVerified: Bool
     @Published var address = Item.Address.none
+    @Published var ratings: Person.Ratings
     
     var person: Person
     private let personRepo = PersonRepository()
@@ -29,13 +30,14 @@ class PersonViewModel: ObservableObject, Identifiable {
         email = person.email
         phone = person.phone ?? ""
         photoUrl = person.photoUrl ?? ""
-        hasEmailVerified = person.hasEmailVerified ?? false
-        address = person.address ?? .none
+        hasEmailVerified = person.userMetadata.isEmailVerified
+        address = person.address
+        ratings = person.ratings
         self.person = person
     }
     
     var hasChanges: Bool {
-        return person.name != name || person.photoUrl != photoUrl || person.hasEmailVerified != hasEmailVerified || person.address != address
+        return person.name != name || person.photoUrl != photoUrl || person.userMetadata.isEmailVerified != hasEmailVerified || person.address != address || ratings != person.ratings || phone != person.phone
     }
     
     func update() {
@@ -44,8 +46,10 @@ class PersonViewModel: ObservableObject, Identifiable {
         new.name = name
         new.email = email
         new.photoUrl = photoUrl
-        new.hasEmailVerified = hasEmailVerified
+        new.userMetadata.isEmailVerified = hasEmailVerified
         new.address = address
+        new.ratings = ratings
+        new.phone = phone
         personRepo.update(new)
         self.person = new
     }

@@ -9,29 +9,29 @@ import SwiftUI
 
 struct ItemsGridsSection: View {
     
-    @ObservedObject private var itemViewModel: ItemViewModel
-    @ObservedObject private var datasource: ItemsDatasource
-    private let posterSize: PosterStyle.Size
+    private let itemMenu: ItemMenu
+    @StateObject private var datasource: ItemsDatasource
     
-    init(_ itemViewModel: ItemViewModel, _ itemMenu: ItemMenu, _ posterSize: PosterStyle.Size){
-        self.itemViewModel = itemViewModel
-        datasource = AppBackendManager.shared.itemBackendManager(for: itemMenu)
-        self.posterSize = posterSize
+    init(_ itemMenu: ItemMenu){
+        _datasource = StateObject(wrappedValue: AppBackendManager.shared.itemBackendManager(for: itemMenu))
+        self.itemMenu = itemMenu
     }
     
 
     var body: some View {
         
         VStack(alignment: .leading) {
-            ItemsHeaderView(datasource.itemMenu)
+            ItemsHeaderView(itemMenu)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(datasource.itemViewModels) {
-                        ItemGridCell(itemViewModel: $0)
+                        ItemGridCell()
+                            .environmentObject($0)
                     }
                 }
-            }.insetGroupSectionStyle()
+            }
+            .insetGroupSectionStyle()
         }
-        .task { datasource.loadData()}
+        .task { datasource.fetchData() }
     }
 }

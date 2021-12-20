@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchResultCell: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         HStack {
@@ -29,8 +29,8 @@ struct SearchResultCell: View {
                 SellerInfoLabel(itemViewModel)
                 
                 HStack {
-                    ItemFavouritesLabel(itemViewModel)
-                    ItemViewsLabel(itemViewModel)
+                    ItemFavouritesLabel()
+                    ItemViewsLabel()
                     
                     Spacer()
                     Text(itemViewModel.item.date_added)
@@ -38,7 +38,7 @@ struct SearchResultCell: View {
                     
                 }
                 .foregroundColor(.secondary)
-            }.tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
+            }.tapToPush(ItemDetailView().environmentObject(itemViewModel).anyView)
         }
     }
 }

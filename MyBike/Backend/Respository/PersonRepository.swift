@@ -23,12 +23,12 @@ class PersonRepository {
         }
     }
     
-    func update(_ person: Person) {
+    func update(_ person: Person, _ completion: ((Error?) -> Void)? = nil) {
         guard let personId = person.id else { return }
         do {
-            try store.collection(path).document(personId).setData(from: person)
+            try store.collection(path).document(personId).setData(from: person, merge: true, completion: completion)
         } catch {
-            fatalError("Unable to update card: \(error.localizedDescription).")
+            completion?(error)
         }
     }
     

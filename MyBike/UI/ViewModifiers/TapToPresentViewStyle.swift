@@ -29,6 +29,7 @@ struct TapToPresentViewStyle: ViewModifier {
             }
         }
         .onTapGesture(perform: {
+            Vibration.rigid.vibrate()
             isPresented = true
         })
     }

@@ -39,7 +39,7 @@ struct APIService {
         }
         
         guard !items.isEmpty else {
-            throw APIService.APIError.noMoreData
+            throw APIService.APIError.decodingError
         }
         let nextQuery = query.start(afterDocument: lastDocument)
         

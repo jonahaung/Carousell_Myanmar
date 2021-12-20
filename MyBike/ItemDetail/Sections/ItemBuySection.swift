@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ItemBuySection: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         HStack {
             getButton
             chatButton
         }
-        .padding(.vertical)
+        .padding()
     }
     
     private var getButton: some View {
@@ -24,8 +24,8 @@ struct ItemBuySection: View {
             
         } label: {
             Text("Get this item")
-                .formSubmitButtonStyle(.pink)
-                .padding(.horizontal)
+                .formSubmitButtonStyle(.red)
+                
         }
     }
     private var chatButton: some View {
@@ -34,7 +34,6 @@ struct ItemBuySection: View {
         } label: {
             Text("Start Chat")
                 .formSubmitButtonStyle(.mint)
-                .padding(.horizontal)
         }
     }
 }

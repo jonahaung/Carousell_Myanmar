@@ -10,11 +10,7 @@ import Firebase
 
 struct ItemFavouritesLabel: View {
     
-    @ObservedObject private var itemViewModel: ItemViewModel
-    
-    init(_ _itemViewModel: ItemViewModel) {
-        itemViewModel = _itemViewModel
-    }
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         HStack(spacing: 2) {
@@ -25,23 +21,8 @@ struct ItemFavouritesLabel: View {
         }
         .foregroundStyle(.secondary)
         .onTapGesture {
-            toggleFavourite()
+            Vibration.light.vibrate()
+            itemViewModel.toggleFavourite()
         }
-    }
-    
-    private func toggleFavourite() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        var newItem = itemViewModel.item
-        var uids = newItem.favourites.uids
-        
-        if newItem.favourites.isFavourite {
-            if let index = uids.firstIndex(of: uid) {
-                uids.remove(at: index)
-            }
-        } else {
-            uids.append(uid)
-        }
-        newItem.favourites = Item.Favourites(count: uids.count, uids: uids)
-        ItemRepository.shared.update(newItem)
     }
 }

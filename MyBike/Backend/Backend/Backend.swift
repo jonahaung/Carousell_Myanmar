@@ -31,4 +31,23 @@ class Backend {
         let result: APIService.APIResult<T> = try await APIService.shared.GET(query: query)
         return result.results
     }
+    
+    func getItemViewModels(items: [Item]) async -> [ItemViewModel] {
+        var itemViewModels = [ItemViewModel?]()
+        await withTaskGroup(of: ItemViewModel?.self) { group in
+            for x in items {
+                group.addTask {
+                    if let person = try? await x.seller.getPerson() {
+                        return ItemViewModel(item: x, person: person)
+                    }
+                    return nil
+                }
+            }
+            
+            for await x in group {
+                itemViewModels.append(x)
+            }
+        }
+        return itemViewModels.compactMap{$0}
+    }
 }

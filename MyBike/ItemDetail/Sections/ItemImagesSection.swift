@@ -9,12 +9,11 @@ import SwiftUI
 
 struct ItemImagesSection: View {
     
-    @StateObject var itemViewModel: ItemViewModel
-    let geo: GeometryProxy
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         ImageCarouselView(itemViewModel: itemViewModel)
-            .frame(height: geo.size.width * PosterStyle.aspectRatio)
             .insetGroupSectionStyle(0)
+            .aspectRatio(1/PosterStyle.aspectRatio, contentMode: .fit)
     }
 }

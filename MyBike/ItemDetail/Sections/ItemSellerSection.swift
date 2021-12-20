@@ -9,20 +9,24 @@ import SwiftUI
 
 struct ItemSellerSection: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         Group {
-            VStack {
-                HStack {
-                    PersonImageView(itemViewModel.item.seller.photoUrl, .medium)
-                    VStack {
-                        Text(itemViewModel.item.seller.userName)
-                        PopularityBadge(score: Int.random(in: 1..<99))
+            if let person = itemViewModel.person {
+                VStack {
+                    HStack {
+                        PersonImageView(person.photoUrl, .medium)
+                        VStack {
+                            Text(person.userName)
+                            PopularityBadge(score: Int.random(in: 1..<99))
+                        }
+                        Spacer()
                     }
-                    Spacer()
                 }
             }
-        }.insetGroupSectionStyle()
+            
+        }
+        .insetGroupSectionStyle()
     }
 }

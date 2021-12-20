@@ -9,18 +9,18 @@ import SwiftUI
 
 struct DoubleColGridCell: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         SingleAxisGeometryReader { width in
             VStack(alignment: .leading) {
                 ZStack(alignment: .bottom) {
                     ItemImageView(itemViewModel.item.images.firstImage, .medium)
-                        .tapToPush(ItemDetailView(itemViewModel: itemViewModel).anyView)
+                        .tapToPush(ItemDetailView().environmentObject(itemViewModel).anyView)
                         .cornerRadius(7)
-                        
+                    
                     HStack{
-                        PersonImageView(itemViewModel.item.seller.photoUrl, .tinyPersonImage)
+                        PersonImageView(itemViewModel.person.photoUrl, .tinyPersonImage)
                         Spacer()
                         Image(systemName: "circle.fill")
                             .foregroundColor(itemViewModel.item.condition.color)
@@ -32,7 +32,7 @@ struct DoubleColGridCell: View {
                         Text("$\(itemViewModel.item.price)")
                             .font(.FjallaOne(16))
                         Spacer()
-                        ItemFavouritesLabel(itemViewModel)
+                        ItemFavouritesLabel()
                     }
                     Text(itemViewModel.item.title.capitalized)
                         .font(.FHACondFrenchNC(14))
@@ -40,15 +40,9 @@ struct DoubleColGridCell: View {
                         .lineLimit(1)
                     
                     HStack {
-                        Text(itemViewModel.item.seller.userName)
-                        HStack(spacing: 0) {
-                            let random = Int.random(in: 0..<6)
-                            ForEach(0..<random, id:\.self) {_ in
-                                Image(systemName: "star.fill")
-                            }
-                        }
+                        Text(itemViewModel.person.userName)
+                        RatingView().environmentObject(PersonViewModel(person: itemViewModel.person))
                         .font(.system(size: 8))
-                        .foregroundStyle(.tertiary)
                     }
                     .font(.FHACondFrenchNC(13))
                     .foregroundStyle(.secondary)
@@ -57,8 +51,7 @@ struct DoubleColGridCell: View {
                         .padding(.vertical, 4)
                 }
             }
-            .contextMenu{ ItemContextMenu(itemViewModel: itemViewModel) }
-            
+            .contextMenu{ ItemContextMenu().environmentObject(itemViewModel) }
         }
     }
 }

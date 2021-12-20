@@ -33,7 +33,7 @@ struct HomeCategoryListView: View {
                 .padding(.leading, getSpaceFor(category))
             }
             .insetGroupSectionStyle()
-            .font(.system(size: UIFont.systemFontSize, weight: .semibold, design: .serif))
+            .font(.system(size: UIFont.labelFontSize, weight: .semibold, design: .serif))
         }
     }
     

@@ -12,11 +12,11 @@ import Firebase
 struct MyBikeApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+   
     var body: some Scene {
         WindowGroup {
-            TabbarView()
-                .accentColor(.mint)
+            CustomTabView()
+//                .accentColor(.mint)
         }
     }
 }
@@ -41,6 +41,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         UIBarButtonItem.appearance().setTitleTextAttributes([.foregroundColor: UIColor(named: "steam_gold")!, .font: UIFont(name: "FjallaOne-Regular", size: 16)!], for: .normal)
         
-        UIWindow.appearance().tintColor = .systemMint
+//        UIWindow.appearance().tintColor = .systemMint
     }
 }

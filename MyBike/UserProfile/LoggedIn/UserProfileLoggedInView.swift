@@ -6,17 +6,13 @@
 //
 
 import SwiftUI
-import FirebaseAuth
 
 struct UserProfileLoggedInView: View {
     
-    @ObservedObject var personViewModel: PersonViewModel
-
-    
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            UserProfileAccountSection(personViewModel: personViewModel)
-            UserProfileItemsSection(personViewModel: personViewModel)
+            UserProfileAccountSection()
+            UserProfileItemsSection()
             
             Section("Favourites"){
                 DoubleColGrid(.favourites)
@@ -25,12 +21,6 @@ struct UserProfileLoggedInView: View {
             Section("Seen"){
                 DoubleColGrid(.seenItems)
             }
-            
-            Section{
-                Text("Sign Out")
-                    .formSubmitButtonStyle(.pink)
-                    .onTapGesture(perform: AuthenticationService.signOut)
-            }.insetGroupSectionStyle()
         }
         .navigationTitle("User Profile")
     }

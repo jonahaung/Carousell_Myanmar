@@ -9,11 +9,7 @@ import SwiftUI
 
 struct ItemViewsLabel: View {
     
-    @ObservedObject private var itemViewModel: ItemViewModel
-    
-    init(_ _itemViewModel: ItemViewModel) {
-        itemViewModel = _itemViewModel
-    }
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         HStack(spacing: 2) {

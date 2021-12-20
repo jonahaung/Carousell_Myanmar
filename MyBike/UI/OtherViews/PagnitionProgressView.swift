@@ -17,15 +17,15 @@ struct PagnitionProgressView: View {
             HStack {
                 Spacer()
                 ProgressView()
-                    .task {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            onAppear()
-                        }
-                    }
                 Spacer()
             }
             Spacer()
         }
-        
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                Vibration.rigid.vibrate()
+                onAppear()
+            }
+        }
     }
 }

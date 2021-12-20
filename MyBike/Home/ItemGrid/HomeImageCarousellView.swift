@@ -9,12 +9,14 @@ import SwiftUI
 
 struct HomeImageCarousellView: View {
     
-    @ObservedObject var itemViewModel: ItemViewModel
-    let geo: GeometryProxy
+    @StateObject var itemViewModel: ItemViewModel
+    
     var body: some View {
-        ImageCarouselView(itemViewModel: itemViewModel)
-            .padding(3)
-            .frame(height: geo.frame(in: .local).width)
-            .background(Color.secondarySystemGroupedBackground)
+        SingleAxisGeometryReader { width in
+            ImageCarouselView(itemViewModel: itemViewModel)
+                .padding(3)
+                .frame(height: width)
+                .background(Color.secondarySystemGroupedBackground)
+        }
     }
 }

@@ -42,15 +42,17 @@ final class SearchViewManager: SearchTextObservable {
         Task {
             do {
                 let items: [Item] = try await backend.load(for: menu)
+                let itemViewModels = await backend.getItemViewModels(items: items)
+                
                 DispatchQueue.main.async {
                     guard !self.isSearching else { return }
-                    let results = items.map{ $0 }
-                    results.reversed().forEach { result in
+                    
+                    itemViewModels.reversed().forEach { result in
                         if !self.completionResults.contains(where: { x in
                             x.id == result.id
                         }) {
                             withAnimation {
-                                self.completionResults.insert(ItemViewModel(item: result), at: 0)
+                                self.completionResults.insert(result, at: 0)
                             }
                         }
                         
@@ -69,8 +71,9 @@ final class SearchViewManager: SearchTextObservable {
         Task {
             do {
                 let items: [Item] = try await backend.load(for: itemMenu)
+                let itemViewModels = await backend.getItemViewModels(items: items)
                 DispatchQueue.main.async {
-                    self.finalResults = items.map{ ItemViewModel(item: $0 )}
+                    self.finalResults = itemViewModels
                 }
             }catch (let error as APIService.APIError) {
                 print(error.localizedDescription)

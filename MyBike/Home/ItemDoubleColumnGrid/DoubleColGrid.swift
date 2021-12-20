@@ -24,14 +24,13 @@ struct DoubleColGrid: View {
     var body: some View {
         LazyVGrid(columns: twoColumnGrid) {
             ForEach(datasource.itemViewModels) {
-                DoubleColGridCell(itemViewModel: $0)
+                DoubleColGridCell()
+                    .environmentObject($0)
             }
             SingleAxisGeometryReader { width in
                 footer
-                    .frame(minWidth: width, minHeight: width * PosterStyle.aspectRatio)
+                    .frame(width: width, height: width * 1.5, alignment: .center)
             }
-            
-            
         }
         .overlay(isSearching ? SearchView().anyView : EmptyView().anyView)
         .insetGroupSectionStyle(10)
@@ -39,7 +38,7 @@ struct DoubleColGrid: View {
         .redacted(reason: !datasource.hasLoaded ? .placeholder : [])
         .confirmationAlert($datasource.errorAlert)
         .task {
-            datasource.loadData()
+            datasource.fetchData()
         }
     }
     
@@ -47,8 +46,6 @@ struct DoubleColGrid: View {
         Group {
             if datasource.hasMoreData {
                 PagnitionProgressView {
-                    datasource.loadData()
-                }.onTapGesture {
                     datasource.loadData()
                 }
             }else {

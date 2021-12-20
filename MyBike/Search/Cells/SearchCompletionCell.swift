@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchCompletionCell: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         Group {

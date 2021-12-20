@@ -9,19 +9,23 @@ import SwiftUI
 
 struct ItemContextMenu: View {
     
-    @ObservedObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
 
     var body: some View {
-        ItemFavouritesLabel(itemViewModel)
+        
+        Button(action: {
+            itemViewModel.toggleFavourite()
+        }) {
+            let text = itemViewModel.item.favourites.isFavourite ? "Remove from favourites" : "Add to favourites"
+            let imageName = itemViewModel.item.favourites.isFavourite ? "heart.fill" : "heart"
+            
+            Label(text, systemImage: imageName)
+        }
+        
         Button(action: {
             itemViewModel.delete()
         }) {
-            HStack {
-                Text("Delete")
-                Image(systemName: "trash.fill")
-                    .imageScale(.small)
-                    
-            }
+            Label("Delete", systemImage: "trash.fill")
         }
     }
 }

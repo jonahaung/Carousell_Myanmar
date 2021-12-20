@@ -22,7 +22,7 @@ struct HomeAdView: View {
                     .padding(.horizontal)
                     .background(RoundedRectangle(cornerRadius: 10).fill(Color.blue))
                     .tapToPresent(List { CategoryList() }.anyView, false)
-
+                
             }
             .multilineTextAlignment(.center)
             .padding()

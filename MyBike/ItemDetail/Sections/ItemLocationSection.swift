@@ -10,7 +10,7 @@ import MapKit
 
 struct ItemLocationSection: View {
     
-    @ObservedObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     @State private var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     @State private var snapshot: UIImage?

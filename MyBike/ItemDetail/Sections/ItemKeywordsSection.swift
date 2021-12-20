@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ItemKeywordsSection: View {
     
-    @StateObject var itemViewModel: ItemViewModel
+    @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

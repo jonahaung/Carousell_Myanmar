@@ -8,31 +8,32 @@
 import SwiftUI
 
 struct TabbarView: View {
-    
     enum Tab: Int {
-        case home, messages, profile, settings
-    }
-    
+       case home, messages, profile, settings
+   }
     @State private var selectedTab = Tab.home
+    
+    private var appBackendManager = AppBackendManager.shared
+    private var authService = AuthenticationService.shared
     
     var body: some View {
         TabView(selection: $selectedTab) {
             HomeView().tabItem{
-                self.tabbarItem(text: "Home", image: "globe.asia.australia.fill")
+                tabbarItem(text: "Home", image: "globe.asia.australia.fill")
             }.tag(Tab.home)
             MessagesView().tabItem {
-                self.tabbarItem(text: "Messages", image: "bubble.left.fill")
+                tabbarItem(text: "Messages", image: "bubble.left.fill")
             }.tag(Tab.messages)
                 .badge("4")
             UserProfileView().tabItem{
-                self.tabbarItem(text: "User", image: "person")
+                tabbarItem(text: "User", image: "person")
             }.tag(Tab.profile)
             SettingsView().tabItem{
-                self.tabbarItem(text: "Settings", image: "gear")
+                tabbarItem(text: "Settings", image: "gear")
             }.tag(Tab.settings)
         }
-        .environmentObject(AuthenticationService.shared)
-        .environmentObject(AppBackendManager.shared)
+        .environmentObject(authService)
+        .environmentObject(appBackendManager)
     }
     
     private func tabbarItem(text: String, image: String) -> some View {
@@ -40,3 +41,4 @@ struct TabbarView: View {
             .imageScale(.large)
     }
 }
+

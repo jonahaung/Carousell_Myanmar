@@ -9,17 +9,18 @@ import SwiftUI
 
 struct ItemsHeaderView: View {
     
-    private let menu: ItemMenu
+    private let itemMenu: ItemMenu
     
     init(_ _menu: ItemMenu) {
-        menu = _menu
+        itemMenu = _menu
     }
     var body: some View {
         HStack {
-            Text(menu.title).textStyle(style: .title_title)
+            Text(itemMenu.title)
+                .textStyle(style: .title_title)
             Spacer()
             Text("See all")
-                .tapToPushItemsList(menu)
+                .tapToPushItemsList(itemMenu)
         }
         .padding(.horizontal)
     }

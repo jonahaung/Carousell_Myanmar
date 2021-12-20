@@ -9,16 +9,13 @@ import SwiftUI
 
 struct SettingsView: View {
     var body: some View {
-        NavigationView{
-            DatePicker("", selection: .constant(Date()))
-                .pickerStyle(.automatic)
-                .navigationTitle("Settings")
+        NavigationView {
+            ScrollView{
+                Text("Hello")
+            }
+            .background(Color.groupedTableViewBackground)
+            .navigationTitle("Settings")
         }
-    }
-}
-
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView()
+        .navigationViewStyle(.stack)
     }
 }

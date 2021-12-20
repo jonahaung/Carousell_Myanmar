@@ -17,9 +17,9 @@ struct SellerInfoLabel: View {
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 2) {
-            PersonImageView(itemViewModel.item.seller.photoUrl, .tinyPersonImage)
-            Text(itemViewModel.item.seller.userName)
-//                .tapToPush(Text("Person").anyView)
+            PersonImageView(itemViewModel.person.photoUrl, .tinyPersonImage)
+            Text(itemViewModel.person.userName)
+                .tapToPush(Text("Person").anyView)
         }
     }
 }

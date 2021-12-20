@@ -99,17 +99,26 @@ extension Item {
         }
     }
     
-    struct BriefPerson: Codable {
+    struct BriefPerson: Codable, Equatable {
         let id: String?
         let userName: String
-        let photoUrl: String
         var userRef: DocumentReference
         
         init(_ person: Person){
             self.id = person.id
             self.userName = person.userName
-            self.photoUrl = person.photoUrl ?? ""
             self.userRef = person.documentReference
+        }
+        
+        func getPerson() async throws -> Person? {
+            do {
+                let ref = try await userRef.getDocument()
+                let person = try ref.data(as: Person.self)
+                return person
+            }catch {
+                print(error)
+                return nil
+            }
         }
     }
     

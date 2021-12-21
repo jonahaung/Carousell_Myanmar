@@ -18,10 +18,10 @@ struct ItemGridCell: View {
                 .cornerRadius(5)
             HStack {
                 Text("$\(itemViewModel.item.price)")
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .font(.FjallaOne(UIFont.systemFontSize))
                     .foregroundColor(.white)
                 Spacer()
-                Image(systemName: "circle.fill")
+                Image(systemName: itemViewModel.item.condition.batteryIcon)
                     .foregroundColor(itemViewModel.item.condition.color)
                     .imageScale(.small)
             }

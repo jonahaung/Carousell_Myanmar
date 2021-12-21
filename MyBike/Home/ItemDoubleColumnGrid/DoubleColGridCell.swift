@@ -22,8 +22,10 @@ struct DoubleColGridCell: View {
                     HStack{
                         PersonImageView(itemViewModel.person.photoUrl, .tinyPersonImage)
                         Spacer()
-                        Image(systemName: "circle.fill")
-                            .foregroundColor(itemViewModel.item.condition.color)
+                        Image(systemName: itemViewModel.item.condition.batteryIcon)
+                            .foregroundColor(.white)
+                            .shadow(radius: 3)
+//                            .foregroundColor(itemViewModel.item.condition.color)
                         
                     }.padding(3)
                 }
@@ -41,7 +43,7 @@ struct DoubleColGridCell: View {
                     
                     HStack {
                         Text(itemViewModel.person.userName)
-                        RatingView().environmentObject(PersonViewModel(person: itemViewModel.person))
+                        RatingView().environmentObject(CurrentUserViewModel(person: itemViewModel.person))
                         .font(.system(size: 8))
                     }
                     .font(.FHACondFrenchNC(13))

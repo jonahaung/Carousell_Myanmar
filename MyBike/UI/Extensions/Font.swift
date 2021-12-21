@@ -23,8 +23,10 @@ extension Font {
     }
     
     static func Serif(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.system(size: UIFont.labelFontSize, design: .serif)
+        return Font.system(size: size, design: .serif)
     }
-    
+    static func Rounded(_ size: CGFloat = UIFont.labelFontSize) -> Font {
+        return Font.system(size: size, design: .rounded)
+    }
        
 }

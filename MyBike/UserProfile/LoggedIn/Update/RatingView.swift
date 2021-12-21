@@ -9,15 +9,29 @@ import SwiftUI
 
 struct RatingView: View {
     
-    @EnvironmentObject private var personViewModel: PersonViewModel
+    @EnvironmentObject private var personViewModel: CurrentUserViewModel
     
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 1) {
             let overall = personViewModel.ratings.overallRating
-            ForEach(0..<5, id:\.self) { i in
-                let imageName = (i + 1) <= overall ? "star.fill" : "star"
-                Image(systemName: imageName)
+            ForEach(0..<overall) { i in
+                Image(systemName: "circle.fill")
+                    .foregroundColor(getColor(i: i+1).opacity(0.7))
             }
+        }
+        .imageScale(.medium)
+        
+    }
+    
+    private func getColor(i: Int) -> Color {
+        switch i {
+        case 1: return .pink
+        case 2: return .orange
+        case 3: return .yellow
+        case 4: return .green
+        case 5: return .blue
+        default:
+            return .clear
         }
     }
 }

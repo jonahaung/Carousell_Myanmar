@@ -106,7 +106,7 @@ struct SellView: View {
                 Button {
                     hideKeyboard()
                     itemSeller.errorAlert = AlertObject(buttonText: "Publish this item", action: {
-                        if let person = authenticationService.personViewModel?.person {
+                        if let person = authenticationService.currentUserViewModel?.person {
                             itemSeller.publish(person: person) {
                                 presentationMode.wrappedValue.dismiss()
                             }

@@ -22,7 +22,7 @@ struct ItemDetailView: View {
             ItemBuySection()
             ItemsGridsSection(.search([.Seller(itemViewModel.person.userName)]))
             VStack {
-                ItemsHeaderView(.search([.Category(itemViewModel.item.category)]))
+                ItemMenuHeaderView(.search([.Category(itemViewModel.item.category)]))
                 DoubleColGrid(.search([.Category(itemViewModel.item.category)]))
             }
         }

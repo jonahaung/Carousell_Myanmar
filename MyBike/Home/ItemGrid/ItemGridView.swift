@@ -19,7 +19,7 @@ struct ItemGridView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ItemsHeaderView(itemMenu)
+            ItemMenuHeaderView(itemMenu)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 5) {
                     ForEach(datasource.itemViewModels) {

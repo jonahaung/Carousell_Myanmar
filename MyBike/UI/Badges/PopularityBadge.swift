@@ -28,7 +28,7 @@ public struct PopularityBadge : View {
             } else if score < 75 {
                 return .yellow
             }
-            return .green
+            return .mint
         }
     }
     
@@ -37,7 +37,7 @@ public struct PopularityBadge : View {
             Circle()
                 .trim(from: 0,
                       to: isDisplayed ? CGFloat(score) / 100 : 0)
-                .stroke(style: StrokeStyle(lineWidth: 2, dash: [1]))
+                .stroke(style: StrokeStyle(lineWidth: 3, dash: [3]))
                 .foregroundColor(scoreColor)
                 .animation(.interpolatingSpring(stiffness: 60, damping: 10).delay(0.1))
         }
@@ -51,15 +51,15 @@ public struct PopularityBadge : View {
         ZStack {
             Circle()
                 .foregroundColor(.clear)
-                .frame(width: 35)
+                .frame(width: 40)
                 .overlay(overlay)
-                .shadow(color: scoreColor, radius: 4)
+//                .shadow(color: scoreColor, radius: 4)
             Text("\(score)%")
                 .font(Font.system(size: 10))
                 .fontWeight(.bold)
                 .foregroundColor(textColor)
             }
-            .frame(width: 35, height: 35)
+            .frame(width: 40, height: 40)
     }
 }
 

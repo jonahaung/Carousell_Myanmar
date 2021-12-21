@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RatingRatableView: View {
     
-    @EnvironmentObject private var manager: UserProfileUpdateManager
+    @EnvironmentObject private var currentUserViewModel: CurrentUserViewModel
     @State private var currentRate: Int = 0
     
     var body: some View {
@@ -27,14 +27,14 @@ struct RatingRatableView: View {
         }
         .imageScale(.medium)
         .onAppear {
-            currentRate = manager.personViewModel.ratings.overallRating
+            currentRate = currentUserViewModel.ratings.overallRating
         }
     }
     
     private func rate() {
-        let rating = Person.Ratings.Rating.init(person: .init(manager.personViewModel.person), value: currentRate)
+        let rating = Person.Ratings.Rating.init(person: .init(currentUserViewModel.person), value: currentRate)
         print(rating)
-        manager.personViewModel.ratings.values.insert(rating, at: 0)
+        currentUserViewModel.ratings.values.insert(rating, at: 0)
 //        if !manager.personViewModel.ratings.hasRated {
 //            let rating = Person.Ratings.Rating.init(person: .init(manager.personViewModel.person), value: currentRate)
 //            manager.personViewModel.ratings.values.insert(rating, at: 0)

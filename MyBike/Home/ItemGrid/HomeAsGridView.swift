@@ -28,7 +28,7 @@ struct HomeAsGridView: View {
                 HomeAdView()
                 
                 VStack(spacing: .zero) {
-                    ItemsHeaderView(.popular)
+                    ItemMenuHeaderView(.popular)
                     DoubleColGrid(.popular)
                 }
             }

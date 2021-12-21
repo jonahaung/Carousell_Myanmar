@@ -11,9 +11,7 @@ struct HomeCategoryListView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            
-            Text("Categories").textStyle(style: .title_title).padding(.horizontal)
-            
+            ItemMenuHeaderView.init(.category, _showSeeAll: false)
             OutlineGroup(Category.categories, children: \.children) { category in
                 VStack(alignment: .leading, spacing: 0) {
                     Group{
@@ -22,7 +20,7 @@ struct HomeCategoryListView: View {
                                 .tapToPushItemsList(.search([.Category(category)]))
                                 .foregroundColor(.secondary)
                         } else {
-                            Text(category.title.uppercased())
+                            Text(category.title)
                                 .foregroundColor(.primary)
                         }
                     }

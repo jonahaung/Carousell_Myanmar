@@ -31,8 +31,5 @@ struct PersonImageView: View {
         }
         .posterStyle(posterSize: posterSize)
         .clipShape(Circle())
-        .task {
-            imageLoader.loadImage()
-        }
     }
 }

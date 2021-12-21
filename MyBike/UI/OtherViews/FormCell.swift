@@ -15,7 +15,7 @@ struct FormCell: View {
     var body: some View {
         HStack {
             Text(text)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
             Spacer()
             rightView
                 .font(.Serif())

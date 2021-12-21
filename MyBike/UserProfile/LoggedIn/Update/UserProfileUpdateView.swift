@@ -10,73 +10,68 @@ import SwiftUI
 struct UserProfileUpdateView: View {
 
     @Environment(\.presentationMode) private var presentationMode
-    @ObservedObject var manager: UserProfileUpdateManager
+    @EnvironmentObject private var currentUserViewModel: CurrentUserViewModel
     
     var body: some View {
-        NavigationView {
-            List {
-                
-                Section(header: imageView) {
-                    FormCell(text: "User Name", rightView: TextField("UserName", text: $manager.personViewModel.userName).anyView)
-                    FormCell(text: "Name", rightView: TextField("Name", text: $manager.personViewModel.name).anyView)
-                    FormCell(text: "Phone", rightView: TextField("+95900000000", text: $manager.personViewModel.phone).textContentType(.telephoneNumber).anyView)
-                }
-                
-                Section {
-                    RatingRatableView().environmentObject(manager)
-                    
-                    FormCell(text: "Region", rightView: SellAddressSection(address: $manager.personViewModel.address).anyView)
-                        .tapToPush(RegionPicker(address: $manager.personViewModel.address).anyView)
-                }
-                
-                Section("Personal Informations") {
-                    Text("Email").badge(manager.personViewModel.email)
-                    Text("Phone").badge(manager.personViewModel.phone)
-                }
-                
-                Section {
+        Form {
+            Section(header: imageView, footer: Text("Tap to edit")) {
+                TextField("Display Name", text: $currentUserViewModel.name)
+                TextField("Phone Number", text: $currentUserViewModel.phone).textContentType(.telephoneNumber)
+                SellAddressSection(address: $currentUserViewModel.address)
+                    .tapToPush(RegionPicker(address: $currentUserViewModel.address).anyView)
+            }
+            
+            Section {
+                RatingRatableView()
+            }
+            
+            Section {
+                if !currentUserViewModel.hasEmailVerified {
                     Button("Verify Email"){
                         
-                    }.disabled(manager.personViewModel.hasEmailVerified)
-                    
-                    Button("Reset Password"){
-                        
-                    }
-                    Button("Deactivate Account"){
-                        
                     }
                 }
-            }
-            .navigationTitle("Update Profile")
-            .navigationBarItems(leading: navLeadingView, trailing: navTrailingView)
-            .fullScreenCover(isPresented: $manager.showImagePickerCropper) {
-                ImagePickerCropperView(onPick: { image in
-                    manager.uploadImage(image: image)
-                }, shape: .circle(maskOnly: false), ratio: .canUseMultiplePresetFixedRatio(defaultRatio: 1))
+                Button("Link Account"){
+                    
+                }
+                Button("Reset Password"){
+                    
+                }
+                Button("Deactivate Account"){
+                    
+                }
             }
         }
+        .navigationTitle("Update Profile")
+        .navigationBarItems(trailing: navTrailingView)
     }
     
     private var imageView: some View {
-        PersonImageView(manager.personViewModel.photoUrl, .big)
-            .onTapGesture {
-                manager.showImagePickerCropper = true
+        HStack {
+            Spacer()
+            VStack {
+                PersonImageView(currentUserViewModel.photoUrl, .big)
+                    .tapToPresent(imagePickerEditor.anyView, true)
+                    .shadow(radius: 6)
+                Text("Upload")
+                    .tapToPresent(imagePickerEditor.anyView, true)
             }
+            Spacer()
+        }.padding(.bottom)
+    }
+    
+    private var imagePickerEditor: some View {
+        ImagePickerCropperView(onPick: { image in
+            currentUserViewModel.uploadImage(image: image)
+        }, shape: .circle(maskOnly: false), ratio: .canUseMultiplePresetFixedRatio(defaultRatio: 1))
     }
     
     private var navTrailingView: some View {
         HStack {
             Button("Save") {
-                manager.save()
+                currentUserViewModel.update()
                 presentationMode.wrappedValue.dismiss()
-            }.disabled(!manager.personViewModel.hasChanges)
-        }
-    }
-    private var navLeadingView: some View {
-        HStack {
-            Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            }
+            }.disabled(!currentUserViewModel.hasChanges)
         }
     }
 }

@@ -7,20 +7,25 @@
 
 import SwiftUI
 
-struct ItemsHeaderView: View {
+struct ItemMenuHeaderView: View {
     
     private let itemMenu: ItemMenu
+    private let showSeeAll: Bool
     
-    init(_ _menu: ItemMenu) {
+    init(_ _menu: ItemMenu, _showSeeAll: Bool = true) {
         itemMenu = _menu
+        showSeeAll = _showSeeAll
     }
     var body: some View {
         HStack {
             Text(itemMenu.title)
                 .textStyle(style: .title_title)
+                .foregroundColor(.steam_gold)
             Spacer()
-            Text("See all")
-                .tapToPushItemsList(itemMenu)
+            if showSeeAll {
+                Text("See all")
+                    .tapToPushItemsList(itemMenu)
+            }
         }
         .padding(.horizontal)
     }

@@ -33,7 +33,7 @@ struct CommentWriterView: View {
     
     private var submitButton: some View {
         Button {
-            if !text.isEmpty, let person = authenticationService.personViewModel?.person {
+            if !text.isEmpty, let person = authenticationService.currentUserViewModel?.person {
                 let comment = Item.Comment(text, person)
                 itemViewModel.addComments(comment: comment) {
                     presentationMode.wrappedValue.dismiss()

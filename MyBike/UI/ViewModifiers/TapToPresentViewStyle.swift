@@ -18,16 +18,21 @@ struct TapToPresentViewStyle: ViewModifier {
         Group {
             if isFullScreen {
                 content
+                    .font(.Serif())
+                    .foregroundColor(.accentColor)
                     .fullScreenCover(isPresented: $isPresented) {
                         destination
                     }
             }else {
                 content
+                    .font(.Serif())
+                    .foregroundColor(.accentColor)
                     .sheet(isPresented: $isPresented) {
                         destination
                     }
             }
         }
+        
         .onTapGesture(perform: {
             Vibration.rigid.vibrate()
             isPresented = true

@@ -69,6 +69,24 @@ extension Person {
         var hasRated: Bool {
             return values.filter{$0.person.id == Auth.auth().currentUser?.uid ?? "" }.count > 0
         }
+        
+        var color: UIColor {
+            let x = overallRating
+            switch x {
+            case 1:
+                return .systemRed
+            case 2:
+                return .systemOrange
+            case 3:
+                return .systemYellow
+            case 4:
+                return .systemGreen
+            case 5:
+                return .systemMint
+            default:
+                return .clear
+            }
+        }
     }
 }
 

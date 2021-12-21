@@ -13,9 +13,9 @@ class AuthenticationService: ObservableObject {
     
     static let shared = AuthenticationService()
     
-    @Published var personViewModel: PersonViewModel?
-
-    var isLoggedIn: Bool { personViewModel != nil }
+    @Published var currentUserViewModel: CurrentUserViewModel?
+    @Published var alert = AlertObject("", buttonText: "", show: false)
+    var isLoggedIn: Bool { currentUserViewModel != nil }
     
     private var authenticationStateHandler: AuthStateDidChangeListenerHandle?
     private var personListener: ListenerRegistration?
@@ -35,7 +35,7 @@ class AuthenticationService: ObservableObject {
                     self.addPersonListener(user: user)
                 } else {
                     self.personListener?.remove()
-                    self.personViewModel = nil
+                    self.currentUserViewModel = nil
                 }
             }
     }
@@ -46,13 +46,12 @@ class AuthenticationService: ObservableObject {
             .addSnapshotListener(includeMetadataChanges: true) { (snap, err) in
                 do {
                     if let person = try snap?.data(as: Person.self) {
-                        
                         DispatchQueue.main.async {
-                            self.personViewModel = PersonViewModel(person: person)
+                            self.currentUserViewModel = CurrentUserViewModel(person: person)
                         }
                     } else {
                         DispatchQueue.main.async {
-                            self.personViewModel = nil
+                            self.currentUserViewModel = nil
                         }
                     }
                 }catch {
@@ -62,6 +61,11 @@ class AuthenticationService: ObservableObject {
             }
     }
     
+    func signOut() {
+        alert = .init("Are you sure to log out?", buttonText: "Continue Log Out", action: {
+            AuthenticationService.signOut()
+        }, cancelAction: {})
+    }
     
     static func signIn(email: String, password: String, completion: @escaping (User?, Error?) -> Void ) {
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in

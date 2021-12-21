@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PersonDetailView: View {
     
-    @ObservedObject var personViewModel: PersonViewModel
+    @ObservedObject var personViewModel: CurrentUserViewModel
     
     var body: some View {
         Group {

@@ -21,7 +21,7 @@ struct ItemsGridsSection: View {
     var body: some View {
         
         VStack(alignment: .leading) {
-            ItemsHeaderView(itemMenu)
+            ItemMenuHeaderView(itemMenu)
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(datasource.itemViewModels) {

@@ -25,7 +25,6 @@ struct HomeView: View {
             }
             
             .navigationBarItems(leading: navLeadingView, trailing: NavTrailingView)
-//            .overlay(alignment: .bottomTrailing) { SellButtonView() }
             .navigationBarTitleDisplayMode(homeMode == .list ? .inline : .automatic)
         }
         .navigationViewStyle(.stack)

@@ -14,16 +14,25 @@ struct UserProfileView: View {
     var body: some View {
         NavigationView {
             Group {
-                if let personViewModel = authenticationService.personViewModel {
+                if let currentUserViewModel = authenticationService.currentUserViewModel {
                     UserProfileLoggedInView()
-                        .environmentObject(personViewModel)
+                        .environmentObject(currentUserViewModel)
                 } else {
                     UserProfileNotLoggedInView()
                 }
             }
             .navigationTitle("User Profile")
             .background(Color.groupedTableViewBackground)
+            .navigationBarItems(leading: navBarLeadingView)
         }
         .navigationViewStyle(.stack)
+        .confirmationAlert($authenticationService.alert)
+    }
+    
+    private var navBarLeadingView: some View {
+        HStack {
+            Image(systemName: "gearshape.fill")
+                .tapToPush(SettingsView().anyView)
+        }
     }
 }

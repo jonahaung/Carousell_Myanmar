@@ -39,9 +39,9 @@ struct CustomTabView: View {
                     .offset(y: -geometry.size.height/6)
             }
             HStack {
-                TabBarIcon(viewRouter: viewRouter, assignedPage: .home, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "homekit", tabName: "Home")
+                TabBarIcon(viewRouter: viewRouter, assignedPage: .home, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "flame.fill")
                 
-                TabBarIcon(viewRouter: viewRouter, assignedPage: .messages, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "globe", tabName: "Noti")
+                TabBarIcon(viewRouter: viewRouter, assignedPage: .messages, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "globe.asia.australia.fill")
                 
                 ZStack {
                     Circle()
@@ -63,8 +63,8 @@ struct CustomTabView: View {
                     }
                 }
                 
-                TabBarIcon(viewRouter: viewRouter, assignedPage: .user, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "person.crop.circle", tabName: "Account")
-                TabBarIcon(viewRouter: viewRouter, assignedPage: .settings, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "gear", tabName: "Settings")
+                TabBarIcon(viewRouter: viewRouter, assignedPage: .user, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "person.circle.fill")
+                TabBarIcon(viewRouter: viewRouter, assignedPage: .settings, width: geometry.size.width/5, height: geometry.size.height/28, systemIconName: "gearshape.fill")
                 
             }
             .frame(width: geometry.size.width, height: geometry.size.height/8)

@@ -13,7 +13,7 @@ struct TabBarIcon: View {
     let assignedPage: ViewRouter.Page
     
     let width, height: CGFloat
-    let systemIconName, tabName: String
+    let systemIconName: String
     
     var body: some View {
         VStack {
@@ -22,16 +22,12 @@ struct TabBarIcon: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: width, height: height)
                 .padding(.top, 10)
-            Text(tabName)
-                .font(.footnote)
             Spacer()
         }
         .padding(.horizontal, -4)
         .onTapGesture {
             ToneManager.vibrate(vibration: .light)
-            withAnimation {
-                viewRouter.currentPage = assignedPage
-            }
+            viewRouter.currentPage = assignedPage
         }
         .foregroundColor(viewRouter.currentPage == assignedPage ? .accentColor : .tertiaryLabel)
     }

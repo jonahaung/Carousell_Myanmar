@@ -172,10 +172,19 @@ extension Item {
                 return 0
             }
         }
+        var batteryIcon: String {
+            switch self {
+            case .brandNew: return "battery.100"
+            case .likeNew: return "battery.75"
+            case .wellUsed: return "battery.50"
+            case .heavilyUsed: return "battery.25"
+            case .none: return "battery.0"
+            }
+        }
         var color: Color {
             switch self {
-            case .brandNew: return .green
-            case .likeNew: return .yellow
+            case .brandNew: return .mint
+            case .likeNew: return .green
             case .wellUsed: return .orange
             case .heavilyUsed: return .red
             case .none: return .white

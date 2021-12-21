@@ -13,8 +13,6 @@ struct RegionPicker: View {
     
     @Environment(\.presentationMode) var presentationMode
     private let getLocation = GetLocation()
-//    @State var selected: Item.Address
-//    var onPick: ((Item.Address) -> Void)?
     @Binding var address: Item.Address
     @State private var searchText = ""
     @State private var showLoading = false
@@ -36,9 +34,9 @@ struct RegionPicker: View {
             }
         }
         .navigationBarTitle("Townships")
-        .navigationBarItems(trailing: loadingItem)
+        .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Townships")
-        .task {
+        .onAppear {
             getCurrentAddress()
         }
     }
@@ -49,7 +47,6 @@ struct RegionPicker: View {
                     ForEach(state.townships) { township in
                         Button {
                             let selected = Item.Address.init(state: state.name, township: township.township)
-//                            onPick?(selected)
                             self.address = selected
                             presentationMode.wrappedValue.dismiss()
                         } label: {
@@ -74,12 +71,15 @@ struct RegionPicker: View {
     
     
     private func getCurrentAddress() {
+        guard !showLoading else { return }
+        showLoading = true
         getLocation.run { location in
             if let location = location {
                 GeoCoder.getAddress(from: location) { address, error in
                     if let address = address {
                         let myanmarState = MyanmarState(name: address.state, townships: [.init(township: address.township, township_mm: address.township)])
                         DispatchQueue.main.async {
+                            self.showLoading = false
                             if !self.myanmarStates.contains(myanmarState) {
                                 if self.address.isEmpty {
                                     self.address = address

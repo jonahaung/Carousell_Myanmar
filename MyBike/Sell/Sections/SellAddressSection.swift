@@ -16,7 +16,6 @@ struct SellAddressSection: View {
             Text(address.township)
             Text(address.state)
                 .italic()
-                .foregroundStyle(.secondary)
         }
     }
 }

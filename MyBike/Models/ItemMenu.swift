@@ -46,11 +46,11 @@ extension ItemMenu {
         case .mostViewed:
             query = query.order(by: "views.count", descending: true)
         case .favourites:
-            if let uid = AuthenticationService.shared.personViewModel?.id {
+            if let uid = AuthenticationService.shared.currentUserViewModel?.id {
                 query = query.whereField("favourites.uids", arrayContains: uid)
             }
         case .seenItems:
-            if let uid = AuthenticationService.shared.personViewModel?.id {
+            if let uid = AuthenticationService.shared.currentUserViewModel?.id {
                 query = query.whereField("views.uids", arrayContains: uid)
             }
         case .category:

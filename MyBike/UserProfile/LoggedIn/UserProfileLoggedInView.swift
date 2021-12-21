@@ -8,20 +8,14 @@
 import SwiftUI
 
 struct UserProfileLoggedInView: View {
-    
+    @EnvironmentObject private var currentUserViewModel: CurrentUserViewModel
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             UserProfileAccountSection()
-            UserProfileItemsSection()
+            UserProfileMenuSection()
+//            UserProfileItemsSection()
             
-            Section("Favourites"){
-                DoubleColGrid(.favourites)
-            }
-            
-            Section("Seen"){
-                DoubleColGrid(.seenItems)
-            }
+            DoubleColGrid(.search([.UserItem(currentUserViewModel.person)]))
         }
-        .navigationTitle("User Profile")
     }
 }

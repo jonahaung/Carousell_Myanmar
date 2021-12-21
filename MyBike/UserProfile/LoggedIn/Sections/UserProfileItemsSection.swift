@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UserProfileItemsSection: View {
     
-    @EnvironmentObject private var personViewModel: PersonViewModel
+    @EnvironmentObject private var personViewModel: CurrentUserViewModel
     
     var body: some View {
         Group {

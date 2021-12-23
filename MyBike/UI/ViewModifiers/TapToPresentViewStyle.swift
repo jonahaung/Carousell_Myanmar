@@ -12,33 +12,32 @@ struct TapToPresentViewStyle: ViewModifier {
     let destination: AnyView
     let isFullScreen: Bool
     
-    @State private var isPresented = false
+    @State private var sheetIsPresented = false
+    @State private var fullScreenIsPresented = false
     
     func body(content: Content) -> some View {
-        Group {
-            if isFullScreen {
-                content
-                    .font(.Serif())
-                    .foregroundColor(.accentColor)
-                    .fullScreenCover(isPresented: $isPresented) {
-                        destination
-                    }
-            }else {
-                content
-                    .font(.Serif())
-                    .foregroundColor(.accentColor)
-                    .sheet(isPresented: $isPresented) {
-                        destination
-                    }
+        content
+            .font(.Serif())
+            .foregroundColor(.accentColor)
+            .onTapGesture {
+                Vibration.light.vibrate()
+                if isFullScreen {
+                    fullScreenIsPresented = true
+                } else {
+                    sheetIsPresented = true
+                }
             }
-        }
-        
-        .onTapGesture(perform: {
-            Vibration.rigid.vibrate()
-            isPresented = true
-        })
+            .fullScreenCover(isPresented: $fullScreenIsPresented) {
+                destination
+                    .accentColor(Color(uiColor: UIWindow.appearance().tintColor))
+            }
+            .sheet(isPresented: $sheetIsPresented) {
+                destination
+                    .accentColor(Color(uiColor: UIWindow.appearance().tintColor))
+            }
     }
 }
+
 extension View {
     func tapToPresent(_ view: AnyView, _ isFullScreen: Bool) -> some View {
         ModifiedContent(content: self, modifier: TapToPresentViewStyle(destination: view, isFullScreen: isFullScreen))

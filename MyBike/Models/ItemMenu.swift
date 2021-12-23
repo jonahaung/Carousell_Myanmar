@@ -12,6 +12,8 @@ enum ItemMenu {
 
     case suggessted, popular, mostViewed, favourites, seenItems, category
     case search([SearchType])
+    
+    static let homeMenus = [ItemMenu.suggessted, .popular, .mostViewed, .category]
 }
 
 extension ItemMenu {

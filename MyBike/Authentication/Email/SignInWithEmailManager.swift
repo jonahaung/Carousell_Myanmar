@@ -86,7 +86,6 @@ final class SignInWithEmailManager: ObservableObject {
                     self.personRepo.find(user.uid) { (person, error) in
                         if var person = person {
                             person.userMetadata = Person.UserMetadata(user)
-                            person.ratings = Person.Ratings(values: [])
                             self.personRepo.update(person) { _ in
                                 self.presentationMode.wrappedValue.dismiss()
                             }
@@ -104,7 +103,7 @@ final class SignInWithEmailManager: ObservableObject {
                 self.alert = AlertObject(error.localizedDescription)
             } else {
                 if let user = user {
-                    let person = Person(id: user.uid, name: self.displayName, email: user.email!, address: .none, userMetadata: .init(user), ratings: .init(values: []))
+                    let person = Person(id: user.uid, name: self.displayName, email: user.email!, address: Optional.none, userMetadata: .init(user), ratings: .init(values: []))
                     self.personRepo.add(person)
                 }
                 self.presentationMode.wrappedValue.dismiss()

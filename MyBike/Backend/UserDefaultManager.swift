@@ -14,6 +14,7 @@ class UserDefaultManager {
     private let defaults = UserDefaults.standard
     
     let _homeMode = "homeMode"
+    let _isCachedItem = "cacheItems"
     
     var homeMode: Int {
         get {
@@ -23,4 +24,12 @@ class UserDefaultManager {
         }
     }
     
+    var isCachedItem: Bool {
+        get {
+            return defaults.bool(forKey: _isCachedItem)
+        }
+        set {
+            defaults.setValue(newValue, forKey: _isCachedItem)
+        }
+    }
 }

@@ -11,7 +11,7 @@ struct TextStyle: ViewModifier {
     
     enum Style {
         
-        case title_headline, title_footnote, title_caption, title_regular, title_title, link_regular, link_small
+        case title_headline, title_footnote, title_regular, title_title, link_regular, link_small
         
         var font: Font {
             switch self {
@@ -24,20 +24,13 @@ struct TextStyle: ViewModifier {
             case .title_title:
                 return .FjallaOne(UIFontMetrics.default.scaledValue(for: 21))
             case .link_regular:
-                return .subheadline
+                return .system(size: UIFont.labelFontSize, weight: .medium, design: .serif)
             case .link_small:
-                return .footnote
-            case .title_caption:
-                return .FjallaOne(UIFontMetrics.default.scaledValue(for: 10))
+                return .system(size: UIFont.systemFontSize, weight: .regular, design: .serif)
+            
             }
         }
-        
-        var color: Color {
-            switch self {
-            case .title_headline: return .steam_gold
-            default: return .primary
-            }
-        }
+
     }
     
     let style: Style

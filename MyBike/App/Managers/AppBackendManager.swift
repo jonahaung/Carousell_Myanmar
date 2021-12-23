@@ -12,13 +12,12 @@ class AppBackendManager: ObservableObject {
     
     static let shared = AppBackendManager()
     
-    @Published var alert = AlertObject("", buttonText: "", show: false)
-    
-    let homeMenus = [ItemMenu.suggessted, .popular, .mostViewed, .category]
-    
     private var itemDatasources = [ItemMenu: ItemsDatasource]()
     
     func itemBackendManager(for itemMenu: ItemMenu) -> ItemsDatasource {
+        guard UserDefaultManager.shared.isCachedItem else {
+            return ItemsDatasource(itemMenu)
+        }
         if let x = itemDatasources[itemMenu] {
             return x
         }

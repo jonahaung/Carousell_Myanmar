@@ -24,6 +24,7 @@ class ItemViewModel: ObservableObject, Identifiable {
 }
 
 extension ItemViewModel {
+    
     func toggleFavourite() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         var newItem = self.item
@@ -38,6 +39,7 @@ extension ItemViewModel {
         }
         newItem.favourites = Item.Favourites(count: uids.count, uids: uids)
         ItemRepository.shared.update(newItem) {
+            self.item = newItem
             Vibration.success.vibrate()
         }
     }
@@ -51,14 +53,18 @@ extension ItemViewModel {
         }
         
         newItem.views = Item.Views(count: count + 1, uids: uids)
-        ItemRepository.shared.update(newItem)
+        ItemRepository.shared.update(newItem) {
+            
+        }
     }
     
     func addComments(comment: Item.Comment, _ completion: @escaping () -> Void) {
         var newItem = item
         let comments = newItem.comments
         newItem.comments = comments + [comment]
-        ItemRepository.shared.update(newItem)
+        ItemRepository.shared.update(newItem) {
+            self.item = newItem
+        }
     }
     func delete() {
         ItemRepository.shared.remove(item) {

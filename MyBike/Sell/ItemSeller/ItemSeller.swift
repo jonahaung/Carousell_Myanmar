@@ -21,38 +21,37 @@ class ItemSeller: ObservableObject {
     @Published var detailText = ""
     @Published var price = ""
     @Published var address = Item.Address.none
-    @Published var errorAlert: AlertObject = AlertObject("", show: false)
     
     private let repository = ItemRepository()
 
     func publish(person: Person,_ done: @escaping () -> Void) {
         guard sellingImages.count > 0 else {
-            errorAlert = AlertObject("Photos are empty")
+            AppAlertManager.shared.alert = AlertObject("Photos are empty")
             return
         }
         if title.isEmpty {
-            errorAlert = AlertObject("Title shouldn't be empty")
+            AppAlertManager.shared.alert = AlertObject("Title shouldn't be empty")
             return
         }
         if !category.isSelected {
-            errorAlert = AlertObject("Category is not selected yet")
+            AppAlertManager.shared.alert = AlertObject("Category is not selected yet")
             return
         }
         if !condition.isSelected {
-            errorAlert = AlertObject("Condition is not selected yet")
+            AppAlertManager.shared.alert = AlertObject("Condition is not selected yet")
             return
         }
         
         if detailText.isEmpty {
-            errorAlert = AlertObject("Detail text shouldn't be empty")
+            AppAlertManager.shared.alert = AlertObject("Detail text shouldn't be empty")
             return
         }
         if price.isEmpty {
-            errorAlert = AlertObject("Price shouldn't be empty")
+            AppAlertManager.shared.alert = AlertObject("Price shouldn't be empty")
             return
         }
         if address.isEmpty {
-            errorAlert = AlertObject("Location shouldn't be empty")
+            AppAlertManager.shared.alert = AlertObject("Location shouldn't be empty")
             return
         }
         showLoading = true
@@ -106,7 +105,7 @@ class ItemSeller: ObservableObject {
         self.repository.add(item) {
             DispatchQueue.main.async {
                 self.showLoading = false
-                self.errorAlert = AlertObject.init("Item published", buttonText: "Done", action: done, cancelAction: {})
+                AppAlertManager.shared.alert = AlertObject.init("Item published", buttonText: "Done", action: done)
             }
         }
         
@@ -117,7 +116,7 @@ class ItemSeller: ObservableObject {
     }
     
     func onClose(_ done: @escaping () -> Void) {
-        errorAlert = AlertObject("Are you sure you want to quit", buttonText: "Exit Anyway", action: done, cancelAction: {})
+        AppAlertManager.shared.alert = AlertObject("Are you sure you want to quit", buttonText: "Yes, Close & Exit", role: .destructive, action: done)
     }
 }
 

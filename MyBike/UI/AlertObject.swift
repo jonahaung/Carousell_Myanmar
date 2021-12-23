@@ -13,17 +13,18 @@ class AlertObject: Identifiable {
     var title: String
     let buttonText: String
     var show: Bool = true
-    let action: (() -> Void)
-    let cancelAction: (() -> Void)
+    let action: (() -> Void)?
+    let cancelAction: (() -> Void)?
+    let role: ButtonRole?
     
-    init(_ title: String = "", buttonText: String = "Okay", show: Bool = true, action: @escaping (() -> Void) = {}, cancelAction: @escaping (() -> Void) = {}) {
+    init(_ title: String = "", buttonText: String = "Okay", role: ButtonRole? = nil, show: Bool = true, action: (() -> Void)? = nil, cancelAction: (() -> Void)? = nil) {
         self.title = title
         self.buttonText = buttonText
         self.show = show
         self.action = action
         self.cancelAction = cancelAction
+        self.role = role
     }
-
 }
 
 struct AlertModifier: ViewModifier {
@@ -32,10 +33,8 @@ struct AlertModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .confirmationDialog(alert.title, isPresented: $alert.show, titleVisibility: alert.title.isEmpty ? .hidden : .visible, presenting: alert) { alert in
-                Button(alert.buttonText, action: alert.action)
-                Button("Cancel", role: .cancel, action: alert.cancelAction)
-            
+            .confirmationDialog(alert.title, isPresented: $alert.show, titleVisibility: alert.title.isEmpty ? .hidden : .visible, presenting: alert) {
+                Button($0.buttonText, role: $0.role, action: $0.action ?? {})
         }
     }
 }

@@ -17,10 +17,10 @@ struct Person: Identifiable, Codable {
     var email: String
     var phone: String?
     var photoUrl: String?
-    
     var address: Item.Address
     var userMetadata: UserMetadata
     var ratings: Ratings
+    var lastSeenDate: Date? = nil
     
     init(id: String, name: String?, email: String?, phone: String? = nil, photoUrl: String? = nil, address: Item.Address? = nil, userMetadata: UserMetadata? = nil, ratings: Ratings? = nil) {
         self.id = id
@@ -35,6 +35,10 @@ struct Person: Identifiable, Codable {
     
     init(_ user: User, name: String, photoUrl: String?) {
         self.init(id: user.uid, name: name, email: user.email, phone: user.phoneNumber, photoUrl: photoUrl, address: Optional.none, userMetadata: .init(user), ratings: .init(values: []))
+    }
+    
+    mutating func setLastSeenDate() {
+        lastSeenDate = .now
     }
 }
 

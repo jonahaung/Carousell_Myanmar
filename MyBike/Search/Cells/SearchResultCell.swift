@@ -29,8 +29,8 @@ struct SearchResultCell: View {
                 SellerInfoLabel(itemViewModel)
                 
                 HStack {
-                    ItemFavouritesLabel()
-                    ItemViewsLabel()
+                    Item_Label_Favourites()
+                    Item_Label_Views()
                     
                     Spacer()
                     Text(itemViewModel.item.date_added)

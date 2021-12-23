@@ -19,12 +19,12 @@ struct FormSubmitButtonStyle: ViewModifier {
             Spacer()
         }
         .padding(7)
-        .background(backgroundColor.cornerRadius(8))
+        .background(RoundedRectangle(cornerRadius: 5).fill(backgroundColor))
     }
 }
 
 extension Text {
-    func formSubmitButtonStyle(_ backgroundColor: Color) -> some View {
+    func formSubmitButtonStyle(_ backgroundColor: Color = .accentColor) -> some View {
         return ModifiedContent(content: self, modifier: FormSubmitButtonStyle(backgroundColor: backgroundColor))
     }
 }

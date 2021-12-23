@@ -28,8 +28,6 @@ final class PaginationBackend: Backend {
         return result.results
     }
     
-    
-    
     func reset() {
         nextQuery = nil
     }

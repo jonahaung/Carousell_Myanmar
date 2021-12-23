@@ -16,7 +16,7 @@ struct MyBikeApp: App {
     var body: some Scene {
         WindowGroup {
             CustomTabView()
-//                .accentColor(.pink)
+                .accentColor(.blue)
         }
     }
 }
@@ -41,6 +41,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         UIBarButtonItem.appearance().setTitleTextAttributes([.foregroundColor: UIColor(named: "steam_gold")!, .font: UIFont(name: "FjallaOne-Regular", size: 16)!], for: .normal)
         
-        UIWindow.appearance().tintColor = .systemMint
+        UIWindow.appearance().tintColor = .systemBlue
     }
 }

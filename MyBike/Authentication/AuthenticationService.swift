@@ -14,7 +14,6 @@ class AuthenticationService: ObservableObject {
     static let shared = AuthenticationService()
     
     @Published var currentUserViewModel: CurrentUserViewModel?
-    @Published var alert = AlertObject("", buttonText: "", show: false)
     var isLoggedIn: Bool { currentUserViewModel != nil }
     
     private var authenticationStateHandler: AuthStateDidChangeListenerHandle?
@@ -62,7 +61,7 @@ class AuthenticationService: ObservableObject {
     }
     
     func signOut() {
-        alert = .init("Are you sure to log out?", buttonText: "Continue Log Out", action: {
+        AppAlertManager.shared.alert = .init("Are you sure to log out?", buttonText: "Continue Log Out", role: .destructive, action: {
             AuthenticationService.signOut()
         }, cancelAction: {})
     }

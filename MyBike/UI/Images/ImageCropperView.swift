@@ -13,6 +13,7 @@ struct ImageCropper: UIViewControllerRepresentable {
     @Binding var presetFixedRatioType: Mantis.PresetFixedRatioType
     let image: UIImage
     var onCropped: ((UIImage) -> Void)
+    
     @Environment(\.presentationMode) private var presentationMode
     
     class Coordinator: CropViewControllerDelegate {
@@ -49,8 +50,9 @@ struct ImageCropper: UIViewControllerRepresentable {
         var config = Mantis.Config()
         config.cropShapeType = cropShapeType
         config.presetFixedRatioType = presetFixedRatioType
-        let cropViewController = Mantis.cropViewController(image: image,
-                                                           config: config)
+        config.cropVisualEffectType = .light
+        let cropViewController = Mantis.cropViewController(image: image, config: config)
+        cropViewController.view.insetsLayoutMarginsFromSafeArea = true
         cropViewController.delegate = context.coordinator
         return cropViewController
     }

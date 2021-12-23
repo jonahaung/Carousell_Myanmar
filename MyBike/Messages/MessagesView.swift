@@ -8,20 +8,13 @@
 import SwiftUI
 
 struct MessagesView: View {
+    
     var body: some View {
-        NavigationView {
-            ScrollView{
-                Text("Hello")
-            }
-            .background(Color.groupedTableViewBackground)
-                .navigationTitle("Notifications")
+        ScrollView{
+            Color.steam_blue
         }
-        .navigationViewStyle(.stack)
+        .background(Color.groupedTableViewBackground)
+        .navigationTitle("Notifications")
     }
-}
-
-struct MessagesView_Previews: PreviewProvider {
-    static var previews: some View {
-        MessagesView()
-    }
+    
 }

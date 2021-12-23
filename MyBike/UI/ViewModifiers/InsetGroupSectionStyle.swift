@@ -9,23 +9,22 @@ import SwiftUI
 
 struct InsetGroupSectionStyle: ViewModifier {
     
-    let padding: CGFloat
+    let sectionPadding: CGFloat
+    let innerPadding: CGFloat
+    let rowSpacing: CGFloat
     
     func body(content: Content) -> some View {
-        VStack(alignment: .leading, spacing: padding) {
-            VStack(alignment: .leading, spacing: 0) {
-                content
-            }
-//            .cornerRadius(10)
-            .padding(padding)
+        VStack(spacing: rowSpacing) {
+            content
         }
-        .background(Color.secondarySystemGroupedBackground.cornerRadius(12))
-        .padding(10)
+        .padding(innerPadding)
+        .background(Color.secondarySystemGroupedBackground.cornerRadius(9))
+        .padding(sectionPadding)
     }
     
 }
 extension View {
-    func insetGroupSectionStyle(_ padding: CGFloat = 12) -> some View {
-        return ModifiedContent(content: self, modifier: InsetGroupSectionStyle(padding: padding))
+    func insetGroupSectionStyle(padding: CGFloat = 10, innerPadding: CGFloat = 10, rowSpacing: CGFloat = 0) -> some View {
+        return ModifiedContent(content: self, modifier: InsetGroupSectionStyle(sectionPadding: padding, innerPadding: innerPadding, rowSpacing: rowSpacing))
     }
 }

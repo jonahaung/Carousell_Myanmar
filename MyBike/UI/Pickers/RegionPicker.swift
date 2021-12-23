@@ -11,7 +11,7 @@ struct RegionPicker: View {
     
     @State private var currentRegion: MyanmarState.Township?
     
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     private let getLocation = GetLocation()
     @Binding var address: Item.Address
     @State private var searchText = ""

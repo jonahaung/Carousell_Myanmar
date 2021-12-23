@@ -28,5 +28,7 @@ extension Font {
     static func Rounded(_ size: CGFloat = UIFont.labelFontSize) -> Font {
         return Font.system(size: size, design: .rounded)
     }
-       
+    static func MonoSpaced(_ size: CGFloat = UIFont.labelFontSize) -> Font {
+        return Font.system(size: size, design: .monospaced)
+    }
 }

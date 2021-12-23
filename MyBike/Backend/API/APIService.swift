@@ -9,7 +9,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct APIService {
+actor APIService {
     
     enum APIError: Error {
         case noMoreData, decodingError

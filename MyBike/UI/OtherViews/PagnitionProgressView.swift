@@ -8,24 +8,31 @@
 import SwiftUI
 
 struct PagnitionProgressView: View {
-
-    var onAppear: (() -> Void)
+    
+    @Binding var hasMoreData: Bool
+    @Binding var isLoading: Bool
+    
+    var loadMoreIfNeeded: () -> Void
+    var refresh: () -> Void
     
     var body: some View {
         VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                ProgressView()
-                Spacer()
+            if hasMoreData {
+                if isLoading {
+                    ProgressView()
+                }else {
+                    Text("..").task {
+                        loadMoreIfNeeded()
+                    }
+                }
+            }else {
+                Text("No more data")
+                    .onTapGesture {
+                        refresh()
+                    }
             }
-            Spacer()
+            Divider().padding()
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                Vibration.rigid.vibrate()
-                onAppear()
-            }
-        }
+        .frame(height: 100)
     }
 }

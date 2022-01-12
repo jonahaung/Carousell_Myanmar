@@ -9,58 +9,33 @@ import SwiftUI
 
 struct SearchView: View {
     
-    @EnvironmentObject var searchManager: SearchViewManager
+    @EnvironmentObject private var searchManager: SearchViewManager
+    @EnvironmentObject private var authenticationService: AuthenticationService
+    @Environment(\.isSearching) private var isSearching: Bool
     
     var body: some View {
-        List {
-            if searchManager.searchText.isEmpty {
-                Section {
-                    HStack {
-                        Text("Category")
-                        Spacer()
-                        Text(searchManager.category.title).tapToPresent(NavigationView{CategoryPickerView(category: $searchManager.category)}.anyView, false)
-                    }
-                    filterMenu
-                }
-            }
-            
-            if !searchManager.completionResults.isEmpty {
-                Section("Results") {
-                    ForEach(searchManager.completionResults) { vm in
-                        SearchCompletionCell().environmentObject(vm)
-                            .onTapGesture {
-                                searchManager.search(.search([.Title(vm.item.title)]))
-                                searchManager.searchText = vm.item.title.capitalized
-                            }
-                    }
-                }
-            }
-            
-            if !searchManager.categories.isEmpty {
-                Section("Categories") {
-                    ForEach(searchManager.categories) { category in
-                        Text(category.title.capitalized).fontWeight(.medium).badge(category.parentNode?.title ?? "").onTapGesture {
-                            searchManager.search(.search([.Category(category)]))
-                            searchManager.searchText = category.title.capitalized
-                        }
-                    }
-                }
-            }
-            
-            Section {
-                ForEach(searchManager.finalResults) {
-                    SearchResultCell()
-                        .environmentObject($0)
+        Group {
+            if isSearching {
+                List {
+                    Search_Section_Completions()
+                    
+                    Search_Section_Categories()
+                    
+                    Search_Section_Suggesstions()
+                        
+                    Search_Section_FinalResults()
                 }
             }
         }
+        .onChange(of: isSearching) { newValue in
+            AppAlertManager.shared.isSearching = newValue
+            
+        }
     }
     
-    private var filterMenu: some View {
-        Picker("Filter", selection: $searchManager.searchMenu) {
-            ForEach(SearchViewManager.SearchMenu.allCases) { menu in
-                Text("\(menu.rawValue)").tag(menu)
-            }
-        }.pickerStyle(.menu)
+    private var progressView: some View {
+        ProgressView().opacity(searchManager.isSearching ? 1 : 0)
     }
+    
+    
 }

@@ -8,82 +8,70 @@ import Foundation
 import Combine
 import SwiftUI
 
-class ItemsDatasource: ObservableObject {
+class ItemsDatasource: ObservableObject, StringRepresentable {
     
-    private let itemMenu: ItemMenu
+    let itemMenu: ItemMenu
+    private let backend = PaginationBackend()
     
-    @Published var itemViewModels: [ItemViewModel] = ItemViewModel.getMockData(for: 10)
-    
+    @Published var itemViewModels: [ItemViewModel] = []
     @Published var hasMoreData = true
     @Published var hasLoaded = false
     @Published var isLoading = false
-    private var task: Task<(), Error>?
-    
-    private let backend = PaginationBackend(6)
     
     init(_ itemMenu: ItemMenu) {
         self.itemMenu = itemMenu
     }
     
-    deinit{
-        task?.cancel()
-        print("Deinit")
-    }
 }
 
 extension ItemsDatasource {
     
-    func loadData() {
+    @MainActor
+    private func loadData() async {
         guard hasMoreData && !isLoading else { return }
         isLoading = true
-        task?.cancel()
-        task = Task {
-            do {
-                let items: [Item] = try await backend.load(for: itemMenu)
-                let itemViewModels = await backend.getItemViewModels(items: items)
-                
-                DispatchQueue.main.async {
-                    if !self.hasLoaded {
-                        self.itemViewModels.removeAll()
-                        self.hasLoaded = true
-                    }
-                    self.itemViewModels += itemViewModels
-                    self.hasMoreData = self.backend.limit == items.count
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.isLoading = false
-                    }
-                }
-            }catch (let error as APIService.APIError) {
-                DispatchQueue.main.async {
-                    switch error {
-                    case .noMoreData:
-                        self.hasMoreData = false
-                        print("no more data")
-                    case .decodingError:
-                        print("decoding error")
-                    }
-                    self.isLoading = false
-                }
-            }
+        
+        let results: [Item]? = await backend.load(for: itemMenu)
+        
+        let items = results ?? []
+    
+        var newViewModels = await backend.getItemViewModels(items: items)
+        newViewModels = newViewModels.sortedMoviesIds(by: itemMenu.itemSort)
+        
+        hasMoreData = AppUserDefault.shared.maxQueryLimit == newViewModels.count
+        
+        if !hasLoaded {
+            hasLoaded = true
+            itemViewModels.removeAll()
         }
         
+        itemViewModels += newViewModels
+        
+        self.isLoading = false
     }
 }
 
 
 extension ItemsDatasource {
     
-    func fetchData() {
+    func fetchData() async {
         if !hasLoaded {
-            loadData()
+            await loadData()
         }
     }
     
-    func resetData() {
-        isLoading = false
-        hasLoaded = false
+    func resetData() async {
+        guard !isLoading else { return }
         hasMoreData = true
+        hasLoaded = false
         backend.reset()
-        fetchData()
+
+        try? await Task.sleep(nanoseconds: 2_000_000_000)
+        await fetchData()
+    }
+    
+    func loadMoreIfNeeded() async {
+        await Task.sleep(2_000_000_000)
+        await loadData()
     }
 }

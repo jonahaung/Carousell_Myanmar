@@ -8,6 +8,7 @@
 import UIKit
 
 extension CGRect {
+    
     init(parentSize: CGSize, size: CGSize){
         let parentRect = CGRect(origin: .zero, size: parentSize)
         let center = CGPoint(x: parentRect.midX, y: parentRect.midY)

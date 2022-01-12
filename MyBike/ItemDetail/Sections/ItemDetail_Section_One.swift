@@ -12,14 +12,13 @@ struct ItemDetail_Section_One: View {
     @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading) {
             HStack{
-                Text(itemViewModel.item.title.capitalized)
+                Text(itemViewModel.item.title.capitalized).fontWeight(.semibold)
                 Spacer()
-                Text("$\(itemViewModel.item.price)")
+                Text(itemViewModel.item.price.toCurrencyFormat()).fontWeight(.bold)
             }
-            .textStyle(style: .title_headline)
-          
+            Divider()
             HStack{
                 Item_Label_Favourites()
                 Item_Label_Views()
@@ -27,7 +26,8 @@ struct ItemDetail_Section_One: View {
                 Text(itemViewModel.item.condition.description)
                     .tapToPushItemsList(.search([.Condition(itemViewModel.item.condition)]))
             }
-        
+            Divider()
+            
             Item_Details_Row_Description(item: itemViewModel.item)
             
         }.insetGroupSectionStyle()

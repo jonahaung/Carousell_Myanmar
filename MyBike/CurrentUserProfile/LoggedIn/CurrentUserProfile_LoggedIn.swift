@@ -8,14 +8,31 @@
 import SwiftUI
 
 struct CurrentUserProfile_LoggedIn: View {
+
     @EnvironmentObject private var currentUserViewModel: CurrentUserViewModel
+    
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            CurrentUserProfile_LoggedIn_Section_Account()
-            CurrentUserProfile_LoggedIn_Section_Menu()
-            CurrentUserProfile_LoggedIn_Section_Items()
-            DoubleCol_Grid()
-                .environmentObject(AppBackendManager.shared.itemBackendManager(for: .search([.UserItem(currentUserViewModel.person)])))
+        
+        CurrentUserProfileProfilePhoto()
+        
+        Divider()
+        
+        SectionWithTitleView("Account") {
+            CurrentUserProfileAccountInfo()
         }
+        
+        SectionWithTitleView("Menus") {
+            CurrentUserProfile_LoggedIn_Section_Menu()
+        }
+        
+        SectionWithTitleView("My Items") {
+            CurrentUserProfile_LoggedIn_Section_Items()
+        }
+        
+        let itemMenu = ItemMenu.search([.Person(uid: currentUserViewModel.person.id!)])
+        SectionWithItemTitleView.init(itemMenu, showViewAll: false) {
+            ItemList(itemMenu)
+        }
+        
     }
 }

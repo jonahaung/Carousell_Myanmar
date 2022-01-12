@@ -8,32 +8,66 @@
 
 import SwiftUI
 
-public struct NotificationBadge : View {
-    public let text: String
-    public let color: Color
-    @Binding public var show: Bool
+struct NotificationBadge : View {
     
-    public init(text: String, color: Color, show: Binding<Bool>) {
-        self.text = text
-        self.color = color
-        self._show = show
-    }
+    @Binding var notification: Notification
+    @State private var show = false
+    @State private var timer: Timer?
     
-    var animation: Animation {
-        Animation
-            .spring()
-            .speed(2)
-    }
-    
-    public var body: some View {
-        Text(text)
-            .foregroundColor(.white)
+    var body: some View {
+        Text(notification.text)
+            .foregroundColor(.secondarySystemGroupedBackground)
+            .font(.subheadline)
             .padding()
-            .background(color)
+            .background(notification.color)
             .cornerRadius(8)
+            .zIndex(3)
             .scaleEffect(show ? 1: 0.5)
             .opacity(show ? 1 : 0)
-            .animation(animation)
-            
+            .animation(Animation.spring().speed(2))
+            .onChange(of: notification, perform: onChange(_:))
+    }
+    
+    
+    private func onChange(_ notification: Notification) {
+        if !notification.text.isEmpty {
+            show = true
+            ToneManager.playSound(tone: .Tock)
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { timer in
+                self.notification.text = ""
+                show.toggle()
+                timer.invalidate()
+            }
+        }
+    }
+}
+
+extension NotificationBadge {
+    
+    struct Notification: Equatable {
+        var text: String
+        var priority: Priority
+        
+        init( _ text: String, _ priority: Priority) {
+            self.text = text
+            self.priority = priority
+        }
+        
+        var color: Color {
+            switch self.priority {
+                case .Success: return .blue
+                case .Warning: return .yellow
+                case .Error: return .pink
+            }
+        }
+        
+        static func == (lhs: NotificationBadge.Notification, rhs: NotificationBadge.Notification) -> Bool {
+            return lhs.text == rhs.text && lhs.priority == rhs.priority
+        }
+        
+        enum Priority {
+            case Success, Warning, Error
+        }
     }
 }

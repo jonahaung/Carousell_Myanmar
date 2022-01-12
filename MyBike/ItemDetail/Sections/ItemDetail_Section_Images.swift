@@ -13,7 +13,7 @@ struct ItemDetail_Section_Images: View {
     
     var body: some View {
         ImageCarouselView(itemViewModel: itemViewModel)
-            .insetGroupSectionStyle()
+            .insetGroupSectionStyle(padding: 3, innerPadding: 3, cornorRadius: 0)
             .aspectRatio(1/PosterStyle.aspectRatio, contentMode: .fit)
     }
 }

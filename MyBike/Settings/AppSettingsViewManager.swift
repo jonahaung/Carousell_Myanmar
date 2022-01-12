@@ -10,11 +10,9 @@ import StoreKit
 
 final class AppSettingsViewManager: ObservableObject {
     
-    @Published var isCachedItem: Bool = UserDefaultManager.shared.isCachedItem {
-        didSet {
-            UserDefaultManager.shared.isCachedItem = isCachedItem
-        }
-    }
+    @Published var showAll = true
+    @Published var storeSize = 0
+    
     func gotoPrivacyPolicy() {
         guard let url = URL(string: "https://bmcamera-b40b2.web.app") else {
             return //be safe
@@ -37,5 +35,15 @@ final class AppSettingsViewManager: ObservableObject {
     
     func gotoDeviceSettings() {
         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+    }
+    
+    func getStoreSize() {
+        Task {
+            let size = await ItemStore.shared.count()
+
+            DispatchQueue.main.async {
+                self.storeSize = size
+            }
+        }
     }
 }

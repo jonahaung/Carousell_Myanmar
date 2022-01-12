@@ -15,10 +15,13 @@ struct ItemDetail_Section_Seller: View {
         Group {
             if let person = itemViewModel.person {
                 HStack {
-                    PersonImageView(person.photoUrl, .medium)
+                    if let urlString = person.photoUrl {
+                        PersonImageView(urlString, .medium)
+                    }
+
                     VStack(spacing: 8) {
                         Text(person.userName)
-                            .tapToPush(PersonProfileView().environmentObject(PersonViewModel(person: person)).anyView)
+                            .tapToPush(PersonProfileView().environmentObject(PersonViewModel(person: person)))
                         
                         Person_Profile_Rating(personViewModel: PersonViewModel(person: person))
                     }

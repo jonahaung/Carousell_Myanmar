@@ -13,7 +13,7 @@ struct ImagePickerMultiple: UIViewControllerRepresentable {
     var maxLimit: Int = 5
     var completion: ((_ selectedImage: [UIImage]) -> Void)? = nil
     
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var configuration = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())

@@ -35,9 +35,9 @@ struct Item_Details_Comments_Writer: View {
         Button {
             if !text.isEmpty, let person = authenticationService.currentUserViewModel?.person {
                 let comment = Item.Comment(text, person)
-                itemViewModel.addComments(comment: comment) {
+                itemViewModel.setAction(.addComment(comment: comment, {
                     presentationMode.wrappedValue.dismiss()
-                }
+                }))
             }
         } label: {
             Text("Submit")

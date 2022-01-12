@@ -12,14 +12,11 @@ struct FormSubmitButtonStyle: ViewModifier {
     let backgroundColor: Color
     
     func body(content: Content) -> some View {
-        HStack {
-            Spacer()
-            content
-                .foregroundColor(.white)
-            Spacer()
-        }
-        .padding(7)
-        .background(RoundedRectangle(cornerRadius: 5).fill(backgroundColor))
+        content
+            .foregroundColor(.white)
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .padding(.vertical)
+            .background(backgroundColor.cornerRadius(5))
     }
 }
 

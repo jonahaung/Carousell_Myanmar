@@ -10,11 +10,14 @@ import SwiftUI
 struct ItemContextMenu: View {
     
     @EnvironmentObject private var itemViewModel: ItemViewModel
-
+    @EnvironmentObject private var authService: AuthenticationService
+    
     var body: some View {
         
         Button(action: {
-            itemViewModel.toggleFavourite()
+            if let x = authService.currentUserViewModel {
+                itemViewModel.setAction(.toggleFavourites(x))
+            }
         }) {
             let text = itemViewModel.item.favourites.isFavourite ? "Remove from favourites" : "Add to favourites"
             let imageName = itemViewModel.item.favourites.isFavourite ? "heart.fill" : "heart"

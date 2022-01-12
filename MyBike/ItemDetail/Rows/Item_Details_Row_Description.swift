@@ -15,16 +15,11 @@ struct Item_Details_Row_Description: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Group {
-                Text("About").italic()
-                +
-                Text(" :   ")
-                +
-                Text(item.description)
-                    .foregroundColor(.secondary)
-            }
-            .lineLimit(self.isOverviewExpanded ? nil : 4)
-            .onTapGesture(perform: toggle)
+            Text(item.description)
+                .lineLimit(self.isOverviewExpanded ? nil : 3)
+                .onTapGesture(perform: toggle)
+                .foregroundStyle(.secondary)
+            
             Button(action: toggle) {
                 Text(self.isOverviewExpanded ? "less" : "more ....")
                     .italic()
@@ -33,7 +28,7 @@ struct Item_Details_Row_Description: View {
     }
     
     private func toggle() {
-        withAnimation{
+        withAnimation(.interactiveSpring()) {
             self.isOverviewExpanded.toggle()
         }
     }

@@ -40,27 +40,3 @@ public struct BorderedButton : View {
                 .cornerRadius(8))
     }
 }
-
-#if DEBUG
-struct BorderedButton_Previews : PreviewProvider {
-    static var previews: some View {
-        VStack {
-            BorderedButton(text: "Add to wishlist",
-                           systemImageName: "film",
-                           color: .green,
-                           isOn: false,
-                           action: {
-                            
-            })
-            BorderedButton(text: "Add to wishlist",
-                           systemImageName: "film",
-                           color: .blue,
-                           isOn: true,
-                           action: {
-                            
-            })
-        }
-    }
-}
-#endif
-

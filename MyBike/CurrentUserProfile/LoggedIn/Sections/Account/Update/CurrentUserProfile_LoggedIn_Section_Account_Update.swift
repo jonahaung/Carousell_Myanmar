@@ -18,7 +18,9 @@ struct CurrentUserProfile_LoggedIn_Section_Account_Update: View {
                 TextField("Display Name", text: $currentUserViewModel.name)
                 TextField("Phone Number", text: $currentUserViewModel.phone).textContentType(.telephoneNumber)
                 SellAddressSection(address: $currentUserViewModel.address)
-                    .tapToPush(RegionPicker(address: $currentUserViewModel.address).anyView)
+                    .tapToPush(RegionPicker(address: currentUserViewModel.address) {
+                        currentUserViewModel.address = $0
+                    })
             }
             
             Section {
@@ -51,10 +53,10 @@ struct CurrentUserProfile_LoggedIn_Section_Account_Update: View {
             Spacer()
             VStack {
                 PersonImageView(currentUserViewModel.photoUrl, .big)
-                    .tapToPresent(imagePickerEditor.anyView, true)
+                    .tapToPresent(imagePickerEditor, true)
                     .shadow(radius: 6)
                 Text("Upload")
-                    .tapToPresent(imagePickerEditor.anyView, true)
+                    .tapToPresent(imagePickerEditor, true)
             }
             Spacer()
         }.padding(.bottom)
@@ -62,7 +64,11 @@ struct CurrentUserProfile_LoggedIn_Section_Account_Update: View {
     
     private var imagePickerEditor: some View {
         ImagePickerCropperView(onPick: { image in
-            currentUserViewModel.uploadImage(image: image)
+            currentUserViewModel.setAction(.uploadImage(image, { url, error in
+                self.currentUserViewModel.update()
+                AppAlertManager.shared.notification.text = error == nil ? "Photo Updated" : error?.localizedDescription ?? "Error"
+            }))
+
         }, shape: .circle(maskOnly: false), ratio: .canUseMultiplePresetFixedRatio(defaultRatio: 1))
     }
     

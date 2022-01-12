@@ -15,7 +15,7 @@ struct SignInView: View {
         NavigationView {
             VStack {
                 Text("Sign In with Email")
-                    .tapToPush(SignInWithEmailView(presentationMode).anyView)
+                    .tapToPush(SignInWithEmailView(presentationMode))
             }
             .navigationTitle("Sign In")
             .navigationBarItems(trailing: navTrailingView)

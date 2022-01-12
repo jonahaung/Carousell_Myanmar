@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import UIKit
 import Combine
 
 class ImageLoaderCache {
@@ -16,19 +15,17 @@ class ImageLoaderCache {
     
     private var loaders: NSCache<NSString, ImageLoader> = NSCache()
     
-    func loaderFor(path: String?, size: PosterStyle.Size) -> ImageLoader {
-        if let path = path {
-            let key = NSString(string: path + "\(size)")
-            if let loader = loaders.object(forKey: key) {
-                return loader
-            } else {
-                let loader = ImageLoader(path, size)
-                loaders.setObject(loader, forKey: key)
-                return loader
-            }
+    func loaderFor(path: String, size: PosterStyle.Size) -> ImageLoader {
+        let key = NSString(string: path + "\(size)")
+        if let loader = loaders.object(forKey: key) {
+            return loader
+        } else {
+            let loader = ImageLoader(path, size)
+            loaders.setObject(loader, forKey: key)
+            return loader
         }
-        return ImageLoader(nil, size)
     }
+    
 }
 
 //final class ImageLoader: ObservableObject {
@@ -128,7 +125,8 @@ class ImageLoaderCache {
 //}
 
 final class ImageLoader: ObservableObject {
-    public let path: String?
+    static let emptyImage = UIColor.systemGray4.getImage(with: .init(width: 10, height: 10 * PosterStyle.aspectRatio))
+    public let path: String
     private let posterSize: PosterStyle.Size
 
     public var objectWillChange: AnyPublisher<UIImage?, Never> = Publishers.Sequence<[UIImage?], Never>(sequence: []).eraseToAnyPublisher()
@@ -137,7 +135,7 @@ final class ImageLoader: ObservableObject {
 
     public var cancellable: AnyCancellable?
 
-    public init(_ urlString: String?, _ posterSize: PosterStyle.Size) {
+    public init(_ urlString: String, _ posterSize: PosterStyle.Size) {
         self.posterSize = posterSize
         self.path = urlString
 
@@ -148,8 +146,10 @@ final class ImageLoader: ObservableObject {
         }).eraseToAnyPublisher()
     }
 
-    func loadImage() {
-        guard let poster = path, image == nil, let url = URL(string: poster) else {
+    private func loadImage() {
+        guard image == nil else { return }
+        guard let url = URL(string: path) else {
+            self.image = UIColor.random.getImage(with: posterSize.cgSize)
             return
         }
         cancellable = ImageService.shared.fetchImage(url, posterSize)

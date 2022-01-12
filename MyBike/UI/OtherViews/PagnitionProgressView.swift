@@ -9,30 +9,25 @@ import SwiftUI
 
 struct PagnitionProgressView: View {
     
-    @Binding var hasMoreData: Bool
-    @Binding var isLoading: Bool
-    
-    var loadMoreIfNeeded: () -> Void
-    var refresh: () -> Void
+    @EnvironmentObject private var datasource: ItemsDatasource
     
     var body: some View {
-        VStack {
-            if hasMoreData {
-                if isLoading {
-                    ProgressView()
+        ZStack {
+            if datasource.hasMoreData {
+                if datasource.isLoading {
+                    ProgressView("loading")
                 }else {
-                    Text("..").task {
-                        loadMoreIfNeeded()
-                    }
+                    ProgressView("preparing")
+                        .task {
+                            await datasource.loadMoreIfNeeded()
+                        }
                 }
-            }else {
-                Text("No more data")
-                    .onTapGesture {
-                        refresh()
-                    }
+            } else {
+                Text("\(datasource.itemViewModels.count) items loaded")
+                    
             }
-            Divider().padding()
         }
-        .frame(height: 100)
+        .font(.subheadline)
+        .frame(minWidth: 100, maxWidth: .infinity, minHeight: 100, maxHeight: .infinity)
     }
 }

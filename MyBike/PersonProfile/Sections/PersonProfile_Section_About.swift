@@ -14,7 +14,7 @@ struct PersonProfile_Section_About: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(personViewModel.name).font(.FjallaOne())
+                Text(personViewModel.name).bold()
                 
                 Image(systemName: personViewModel.hasEmailVerified ? "checkmark.seal.fill" : "exclamationmark.circle.fill")
                     .foregroundColor(personViewModel.hasEmailVerified ? .indigo : .pink)
@@ -26,12 +26,12 @@ struct PersonProfile_Section_About: View {
                 Label(personViewModel.email, systemImage: "at.circle.fill")
                 Label(personViewModel.phone, systemImage: "phone.circle.fill")
                 Label.init("\(personViewModel.address.township) \(personViewModel.address.state)", systemImage: "map.circle.fill")
-            }.foregroundStyle(.secondary)
+            }
             
             Divider()
             Group {
-                FormCell(text: "Member Since", rightView: Text(personViewModel.person.userMetadata.creationDate.relativeString).anyView)
-                FormCell(text: "Last Login", rightView: Text(personViewModel.person.userMetadata.lastSignInDate.relativeString).anyView)
+                FormCell("Member Since") { Text(personViewModel.person.userMetadata.creationDate.relativeString) }
+                FormCell("Last Login") { Text(personViewModel.person.userMetadata.lastSignInDate.relativeString) }
             }
             
         }

@@ -26,26 +26,28 @@ class ItemRepository: ObservableObject {
         }
     }
     
-    func update(_ bike: Item, completion: (()-> Void)? = nil) {
+    func update(_ bike: Item, completion: ((Error?)-> Void)? = nil) {
         guard let bikeId = bike.id else { return }
+        
         do {
             try store.collection(path).document(bikeId).setData(from: bike, completion: { error in
                 if error == nil {
                     AppBackendManager.shared.refresh(bike)
                 }
-                completion?()
+                completion?(error)
             })
         } catch {
-            fatalError("Unable to update card: \(error.localizedDescription).")
+            completion?(error)
         }
     }
     
     func remove(_ bike: Item, completion: @escaping ()-> Void) {
         guard let bikeId = bike.id else { return }
-        store.collection(path).document(bikeId).delete { error in
+        Firestore.firestore().collection(path).document(bikeId).delete { error in
             if let error = error {
                 print("Unable to remove card: \(error.localizedDescription)")
             }
+            print("deleted")
         }
     }
     

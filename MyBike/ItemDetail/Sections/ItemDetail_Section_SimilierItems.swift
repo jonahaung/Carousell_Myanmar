@@ -19,9 +19,7 @@ struct ItemDetail_Section_SimilierItems: View {
     
 
     var body: some View {
-        
-        VStack(alignment: .leading) {
-            Item_Collection_Header(itemMenu)
+        SectionWithItemTitleView(itemMenu) {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(datasource.itemViewModels) {
@@ -32,6 +30,8 @@ struct ItemDetail_Section_SimilierItems: View {
             }
             .insetGroupSectionStyle()
         }
-        .task { datasource.fetchData() }
+        .task {
+            await datasource.fetchData()
+        }
     }
 }

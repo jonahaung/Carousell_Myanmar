@@ -12,11 +12,11 @@ struct ItemDetail_Section_Keywords: View {
     @EnvironmentObject private var itemViewModel: ItemViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .center, spacing: 8) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(itemViewModel.item.keywords) { keyword in
-                        RoundedBadge(text: keyword, color: Color(uiColor: .random))
+                        RoundedBadge(text: keyword, color: .steam_blue)
                             .foregroundColor(.white)
                             .tapToPushItemsList(.search([.Keywords([keyword])]))
                             

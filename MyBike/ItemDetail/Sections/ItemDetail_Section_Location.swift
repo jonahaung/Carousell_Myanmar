@@ -21,7 +21,7 @@ struct ItemDetail_Section_Location: View {
                 Image(uiImage: snapshot)
                     .resizable()
                     .cornerRadius(5)
-                    .tapToPush(MapView(coordinate: coordinate).anyView)
+                    .tapToPush(MapView(coordinate: coordinate))
             }else {
                 EmptyView()
             }

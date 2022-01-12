@@ -10,7 +10,7 @@ import Firebase
 
 class PersonViewModel: ObservableObject, Identifiable {
     
-    var id = ""
+    let id: String
     let userName: String
     @Published var name: String
     @Published var email: String
@@ -34,5 +34,10 @@ class PersonViewModel: ObservableObject, Identifiable {
         address = person.address
         ratings = person.ratings
         self.person = person
+    }
+    
+
+    enum Action {
+        case rate(_ rating: Int)
     }
 }

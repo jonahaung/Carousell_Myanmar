@@ -8,6 +8,7 @@
 import Foundation
 
 extension RandomAccessCollection where Self.Element: Identifiable {
+    
     public func isLastItem<Item: Identifiable>(_ item: Item) -> Bool {
         guard !isEmpty else {
             return false

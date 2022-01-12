@@ -23,22 +23,22 @@ extension UIImage: Identifiable {
 }
 
 struct SellImagesSection: View {
-    
-    @ObservedObject var itemSeller: ItemSeller
+
+    @Binding var sellingItem: SellingItem
     
     var body: some View {
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack{
-                    ForEach($itemSeller.sellingImages) { image in
-                        UpdatableImageView(sellingImage: image.wrappedValue) {
-                            if let index = itemSeller.sellingImages.firstIndex(of: image.wrappedValue) {
-                                itemSeller.sellingImages.remove(at: index)
+                    ForEach(sellingItem.images) { image in
+                        UpdatableImageView(sellingImage: image) {
+                            if let index = sellingItem.images.firstIndex(of: image) {
+                                sellingItem.images.remove(at: index)
                             }
                         }
                     }
                     
-                    if itemSeller.sellingImages.count < 5 {
+                    if sellingItem.images.count < 5 {
                         VStack {
                             Image(systemName: "plus")
                                 .font(.system(size: 50))
@@ -46,7 +46,7 @@ struct SellImagesSection: View {
                                 .padding()
                         }
                         .frame(width: 200, height: 200)
-                        .tapToPresent(imagePickerCropper.anyView, true)
+                        .tapToPresent(imagePickerCropper, true)
                     }
                 }
             }
@@ -54,12 +54,12 @@ struct SellImagesSection: View {
             HStack {
                 Button("Reset") {
                     withAnimation {
-                        itemSeller.sellingImages.removeAll()
+                        sellingItem.images.removeAll()
                     }
                 }
-                .disabled(itemSeller.sellingImages.isEmpty)
+                .disabled(sellingItem.images.isEmpty)
                 Spacer()
-                Text("\(itemSeller.sellingImages.count) of 5")
+                Text("\(sellingItem.images.count) of 5")
                     .italic()
                     .foregroundColor(.secondary)
             }
@@ -68,7 +68,7 @@ struct SellImagesSection: View {
     
     private var imagePickerCropper: some View {
         ImagePickerCropperView { image in
-            itemSeller.sellingImages.append(SellingImage(image: image))
+            sellingItem.images.append(SellingImage(image: image))
         }
     }
 }
@@ -87,7 +87,7 @@ struct UpdatableImageView: View {
                     .scaledToFit()
                 HStack {
                     Text("Edit")
-                        .tapToPresent(imageCropper().anyView, true)
+                        .tapToPresent(imageCropper(), true)
                     Spacer()
                     Button {
                         withAnimation {
@@ -101,7 +101,7 @@ struct UpdatableImageView: View {
             }
         }
         .frame(width: 170, height: 170 * PosterStyle.aspectRatio)
-        .tapToPresent(imagePiker.anyView, false)
+        .tapToPresent(imagePiker, false)
     }
     
     private var imagePiker: some View {

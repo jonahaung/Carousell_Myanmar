@@ -8,37 +8,52 @@
 import Foundation
 import SwiftUI
 
-class AppBackendManager: ObservableObject {
+private class ItemDatasourceCache {
     
-    static let shared = AppBackendManager()
+    static let shared = ItemDatasourceCache()
     
-    private var itemDatasources = [ItemMenu: ItemsDatasource]()
+    private var cache = [ItemMenu: ItemsDatasource]()
     
-    func itemBackendManager(for itemMenu: ItemMenu) -> ItemsDatasource {
-        guard UserDefaultManager.shared.isCachedItem else {
-            return ItemsDatasource(itemMenu)
-        }
-        if let x = itemDatasources[itemMenu] {
+    func loaderFor(itemMenu: ItemMenu) -> ItemsDatasource {
+        if let x = cache[itemMenu] {
             return x
         }
         let x = ItemsDatasource(itemMenu)
-        itemDatasources[itemMenu] = x
+        cache.updateValue(x, forKey: itemMenu)
         return x
     }
     
-    func refreshAllData(_ done: @escaping (() -> Void) = {}) {
-        self.itemDatasources.map{$0.value}.forEach{
-            $0.resetData()
+    var allDatasources: [ItemsDatasource] { cache.map{$0.value} }
+}
+
+final class AppBackendManager: ObservableObject {
+    
+    static let shared = AppBackendManager()
+    
+    func itemBackendManager(for itemMenu: ItemMenu) -> ItemsDatasource {
+        
+        guard AppUserDefault.shared.isCachedForLocalData else {
+            return ItemsDatasource(itemMenu)
         }
+        return ItemDatasourceCache.shared.loaderFor(itemMenu: itemMenu)
+    }
+    
+    var datasourceCount: Int { ItemDatasourceCache.shared.allDatasources.count }
+    
+    func refreshAllData(_ done: @escaping (() -> Void) = {}) {
+//        ItemDatasourceCache.shared.allDatasources.forEach{
+//            $0.resetData()
+//        }
         done()
     }
     
     func refresh(_ item: Item) {
-        itemDatasources.forEach { dic in
-            let olds = dic.value.itemViewModels
-            olds.forEach { old in
+        Task {
+            await ItemStore.shared.storage.values.forEach { old in
                 if old.id == item.id {
-                    old.item = item
+                    DispatchQueue.main.async {
+                        old.item = item
+                    }
                 }
             }
         }

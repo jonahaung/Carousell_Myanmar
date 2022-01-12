@@ -24,7 +24,7 @@ struct CurrentUserProfile_LoggedIn_Section_Menu: View {
                         .resizable()
                     Image(systemName: "bolt.heart.fill")
                         .resizable()
-                        .tapToPushItemsList(.favourites)
+                        .tapToPushItemsList(.MyFavourites(currentUserViewModel.id))
                 }
                 .scaledToFit()
                 .frame(width: 50)

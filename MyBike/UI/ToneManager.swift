@@ -29,6 +29,7 @@ enum Vibration {
     case selection
     case oldSchool
     case rigid
+    case soft
     func vibrate() {
         
         switch self {
@@ -63,6 +64,8 @@ enum Vibration {
         case .rigid:
             let generator = UIImpactFeedbackGenerator(style: .rigid)
             generator.impactOccurred()
+        case .soft:
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
         }
         
     }

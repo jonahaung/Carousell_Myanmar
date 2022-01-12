@@ -7,20 +7,23 @@
 
 import SwiftUI
 
-struct FormCell: View {
+struct FormCell<Content: View>: View {
     
-    let text: String
-    let rightView: AnyView
+    private let text: String
+    let content: () -> Content
+    
+    init(_ text: String, @ViewBuilder _ rightView: @escaping () -> Content) {
+        self.text = text
+        self.content = rightView
+    }
     
     var body: some View {
         HStack {
             Text(text)
-                .foregroundColor(.secondary)
-            Spacer()
-            rightView
-                .font(.Serif())
-                .multilineTextAlignment(.trailing)
                 
+            Spacer()
+            content()
         }
+        Divider()
     }
 }

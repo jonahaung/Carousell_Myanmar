@@ -31,7 +31,7 @@ struct Item_Details_Comments: View {
         HStack {
             Text("Write")
                 .tapToPresent(Item_Details_Comments_Writer(itemViewModel: itemViewModel)
-                                .environmentObject(authenticationService).anyView, false)
+                                .environmentObject(authenticationService), false)
         }
     }
 }

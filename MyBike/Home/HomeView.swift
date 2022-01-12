@@ -1,69 +1,43 @@
 //
-//  HomeView.swift
+//  HomeAsGridView.swift
 //  MyBike
 //
-//  Created by Aung Ko Min on 12/9/21.
+//  Created by Aung Ko Min on 24/11/21.
 //
 
 import SwiftUI
 
 struct HomeView: View {
     
-    @State private var homeMode = HomeMode(rawValue: UserDefaultManager.shared.homeMode) ?? .grid
-
-    @StateObject private var searchManager = SearchViewManager()
-   
+    @EnvironmentObject var authenticationService: AuthenticationService
+    @StateObject private var searchManager = SearchViewManager.shared
+    
     var body: some View {
-        NavigationView {
-            Group {
-                switch homeMode {
-                case .list:
-                    HomeAsDoubleColumnGrid()
-                case .grid:
-                    HomeAsGridView()
+        GeometryReader { geometry in
+            CustomScrollView {
+                VStack {
+                    Home_Grid_Section_ImageCarousell(geometry: geometry)
+                    ForEach(ItemMenu.homeMenus) { HomeItemSectionList($0)}
+                    
+                    HomeCategoryView()
+                    
+                    HomeAdsView()
+                    
+                    if let viewedHistory = authenticationService.currentUserViewModel?.person.viewedHistory {
+                        let itemMenu = ItemMenu.ViewedCategory(viewedHistory)
+                        VStack(alignment: .leading, spacing: 0) {
+                            ItemListTitleView(itemMenu, _showSeeAll: false)
+                            ItemList(itemMenu)
+                        }
+                    }
                 }
+                .overlay(SearchView().environmentObject(searchManager))
             }
-            
-            .navigationBarItems(leading: navLeadingView, trailing: NavTrailingView)
-            .navigationBarTitleDisplayMode(homeMode == .list ? .inline : .automatic)
-        }
-        .navigationViewStyle(.stack)
-        .environmentObject(searchManager)
-        .searchable(text: $searchManager.searchText, placement: .navigationBarDrawer(displayMode: homeMode == .list ? .always : .automatic), prompt: "Search")
-    }
-    
-    private var navLeadingView: some View {
-        HStack {
-//            Button {
-//                AppBackendManager.shared.refreshAllData()
-//            } label: {
-//                Image(systemName: "cart.fill")
-//            }
-        }
-    }
-    
-    private var NavTrailingView: some View {
-        HStack {
-            Button(action: {
-                withAnimation {
-                    homeMode = self.homeMode == .list ? .grid : .list
-                }
-
-                UserDefaultManager.shared.homeMode = homeMode.rawValue
-            }) {
-                Image(systemName: self.homeMode.icon)
+            .refreshable {
+                print("hahaa")
             }
-        }
-    }
-}
-
-
-fileprivate enum HomeMode: Int {
-    case grid, list
-    var icon: String {
-        switch self {
-        case .list: return "square.grid.3x1.fill.below.line.grid.1x2"
-        case .grid: return "rectangle.grid.2x2.fill"
+            .embeddedInNavigationView("Marketplace")
+            .searchable(text: $searchManager.searchText, prompt: "Search")
         }
     }
 }

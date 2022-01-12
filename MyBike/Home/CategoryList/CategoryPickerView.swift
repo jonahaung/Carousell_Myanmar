@@ -10,7 +10,9 @@ import SwiftUI
 struct CategoryPickerView: View {
     
     @Environment(\.presentationMode) private var presentationMode
+    
     @Binding var category: Category
+    var onPick: ((Category) -> Void)? = nil
     
     var body: some View {
         List {
@@ -19,20 +21,17 @@ struct CategoryPickerView: View {
                     Text(category.title).foregroundColor(.secondary)
                         .onTapGesture {
                             self.category = category
+                            if let onPick = onPick {
+                                onPick(category)
+                            }
                             presentationMode.wrappedValue.dismiss()
                         }
-                        .disabled(category == self.category)
                 } else {
                     Text(category.title)
                 }
             }
         }
-        .listStyle(.insetGrouped)
-        .textStyle(style: .title_regular)
         .navigationTitle("Categories")
     }
-    
-    private func cancel() {
-        presentationMode.wrappedValue.dismiss()
-    }
+
 }

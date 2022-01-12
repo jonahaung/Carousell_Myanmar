@@ -10,25 +10,27 @@ import Foundation
 import SwiftUI
 
 extension Font {
+    
+    static func navigationTitleFont(_ size: CGFloat = UIFont.labelFontSize) -> Font {
+        return Font.custom("KaushanScript-Regular", size: UIFontMetrics.default.scaledValue(for: size))
+    }
+    static func sectionTitleFont(_ size: CGFloat = UIFont.systemFontSize) -> Font {
+        return Font.custom("ReggaeOne-Regular", size: UIFontMetrics.default.scaledValue(for: size))
+    }
+    
     static func FHACondFrenchNC(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.custom("FHA Condensed French NC", size: size)
+        return Font.custom("FHA Condensed French NC", size: UIFontMetrics.default.scaledValue(for: size))
     }
     
     static func AmericanCaptain(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.custom("American Captain", size: size)
+        return Font.custom("American Captain", size: UIFontMetrics.default.scaledValue(for: size))
     }
     
-    static func FjallaOne(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.custom("FjallaOne-Regular", size: size)
+    static func FjallaOne(_ size: CGFloat = UIFont.systemFontSize) -> Font {
+        return Font.custom("FjallaOne-Regular", size: UIFontMetrics.default.scaledValue(for: size))
     }
     
-    static func Serif(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.system(size: size, design: .serif)
-    }
-    static func Rounded(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.system(size: size, design: .rounded)
-    }
-    static func MonoSpaced(_ size: CGFloat = UIFont.labelFontSize) -> Font {
-        return Font.system(size: size, design: .monospaced)
+    static func Righteous(_ size: CGFloat = UIFont.labelFontSize) -> Font {
+        return Font.custom("Righteous-Regular", size: UIFontMetrics.default.scaledValue(for: size))
     }
 }

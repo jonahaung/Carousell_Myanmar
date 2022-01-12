@@ -29,6 +29,6 @@ struct Item_Details_Row_Comments: View {
                 .font(.subheadline)
                 .foregroundColor(.tertiaryLabel)
         }
-        .tapToPush(Text("User Profile").anyView)
+        .tapToPush(Text("User Profile"))
     }
 }

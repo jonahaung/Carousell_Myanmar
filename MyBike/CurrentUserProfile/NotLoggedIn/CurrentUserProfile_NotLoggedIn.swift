@@ -12,8 +12,12 @@ struct CurrentUserProfile_NotLoggedIn: View {
     @EnvironmentObject var authenticationService: AuthenticationService
     
     var body: some View {
-        Text("Sign In")
-            .formSubmitButtonStyle(authenticationService.isLoggedIn ? .pink : .accentColor)
-            .tapToPresent(SignInView().anyView, true)
+        VStack {
+            Text("You are not logged in")
+            Text("Sign In")
+                .formSubmitButtonStyle(authenticationService.isLoggedIn ? .pink : .accentColor)
+                .tapToPresent(SignInView(), true)
+        }
+
     }
 }

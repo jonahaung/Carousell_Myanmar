@@ -12,20 +12,20 @@ final class PaginationBackend: Backend {
     
     private var nextQuery: Query?
     
-    override func load<T>(for menu: ItemMenu) async throws -> [T] where T : Decodable, T : Encodable {
+    override func load<T>(for menu: ItemMenu) async -> [T] where T : Codable {
         let query: Query = {
             if let query = nextQuery {
                 return query
             }else {
                 var query = collectionRef(for: T.self)
-                menu.apply(for: &query)
-                return query.limit(to: limit)
+                menu.configureQueryForDatasource(for: &query)
+                return query
             }
         }()
         
-        let result: APIService.APIResult<T> = try await APIService.shared.GET(query: query)
-        self.nextQuery = result.nextQuery
-        return result.results
+        let result: APIService.APIResult<T>? = try? await APIService.shared.GET(query: query)
+        self.nextQuery = result?.nextQuery
+        return result?.results ?? []
     }
     
     func reset() {

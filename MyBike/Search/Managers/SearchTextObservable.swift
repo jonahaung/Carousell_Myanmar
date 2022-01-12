@@ -19,8 +19,8 @@ open class SearchTextObservable: ObservableObject {
             }
         }
         didSet {
-            DispatchQueue.main.async {
-                self.onUpdateText(text: self.searchText)
+            Task {
+                await self.onUpdateText(text: self.searchText)
             }
         }
     }
@@ -46,15 +46,18 @@ open class SearchTextObservable: ObservableObject {
         .removeDuplicates()
         .filter { !$0.isEmpty }
         .sink(receiveValue: { (searchText) in
-            self.onUpdateTextDebounced(text: searchText)
+            Task {
+                await self.onUpdateTextDebounced(text: searchText)
+            }
         })
     }
-    
-    open func onUpdateText(text: String) {
+    @MainActor
+    open func onUpdateText(text: String) async {
         /// Overwrite by your subclass to get instant text update.
     }
     
-    open func onUpdateTextDebounced(text: String) {
+    @MainActor
+    open func onUpdateTextDebounced(text: String) async {
         /// Overwrite by your subclass to get debounced text update.
     }
 }

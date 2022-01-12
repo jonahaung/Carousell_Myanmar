@@ -9,10 +9,10 @@ import SwiftUI
 
 struct CurrentUserProfileView: View {
     
-    @EnvironmentObject var authenticationService: AuthenticationService
+    @EnvironmentObject private var authenticationService: AuthenticationService
     
     var body: some View {
-        Group {
+        CustomScrollView {
             if let currentUserViewModel = authenticationService.currentUserViewModel {
                 CurrentUserProfile_LoggedIn()
                     .environmentObject(currentUserViewModel)
@@ -20,6 +20,6 @@ struct CurrentUserProfileView: View {
                 CurrentUserProfile_NotLoggedIn()
             }
         }
-        .navigationTitle("User Profile")
+        .embeddedInNavigationView("Profile")
     }
 }

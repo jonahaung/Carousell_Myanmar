@@ -18,7 +18,7 @@ class ImageService {
         case statusNotOk, imageError
     }
 
-    func asyncImage(_ url: URL, _ size: PosterStyle.Size) async throws -> UIImage {
+    func asyncImage(_ url: URL, _ size: PosterStyle.Size) async -> UIImage {
         let fetchTask = Task { () throws -> UIImage in
             let (data, response) = try await urlSession.data(from: url)
             try Task.checkCancellation()
@@ -30,7 +30,9 @@ class ImageService {
             }
             return image
         }
-        let image = try await fetchTask.value
+        guard let image = try? await fetchTask.value else {
+            return UIImage()
+        }
         fetchTask.cancel()
         
         return await resize(image, size)
@@ -52,6 +54,7 @@ class ImageService {
     }
 
     func fetchImage(_ url: URL, _ size: PosterStyle.Size) -> AnyPublisher<UIImage?, Never> {
+       
         return URLSession.shared.dataTaskPublisher(for: url)
             .tryMap { (data, response) -> UIImage? in
                 return self.resize(UIImage(data: data), size)

@@ -8,6 +8,7 @@
 import SwiftUI
 
 extension Alert: Identifiable {
+    
     public var id: String {
         return UUID().uuidString
     }

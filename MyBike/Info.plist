@@ -33,14 +33,16 @@
 	<string>TO Do</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>ReggaeOne-Regular.ttf</string>
+		<string>Righteous-Regular</string>
+		<string>KaushanScript-Regular.ttf</string>
 		<string>FHACondFrenchNC.otf</string>
-		<string>American Captain.otf</string>
 		<string>FjallaOne-Regular.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
-		<true/>
+		<false/>
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
@@ -52,9 +54,15 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<false/>
+	<key>UIStatusBarHidden</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 </dict>
 </plist>

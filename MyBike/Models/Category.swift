@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Category: Identifiable, Codable {
+struct Category: Codable, Identifiable, Hashable {
     
     static let rootNode: Category = {
         var root = Category(title: "root")
@@ -21,17 +21,17 @@ struct Category: Identifiable, Codable {
         }
         return root
     }()
-    
     static var categories: [Category] { return rootNode.children ?? [] }
-    static var allValues: [Category] {
+    static let allValues: [Category] = {
         var results = [Category]()
-        Category.categories.forEach { cat in
-            if let children = cat.children {
+        Category.categories.forEach {
+            if let children = $0.children {
                 results += children
             }
         }
         return results
-    }
+    }()
+    
     
     var id: String { return title }
     let title: String
@@ -41,33 +41,16 @@ struct Category: Identifiable, Codable {
         self.title = title
     }
     
+    var hasChildren: Bool { children?.count ?? 0 > 0 }
+    var isTopItem: Bool { parentNode == Category.rootNode }
 }
 
 extension Category {
     
-    static let none = Category(title: "Select Category")
-    var isSelected: Bool { return title != "Select Category" }
+    static let none = Category(title: "none")
+    var isSelected: Bool { return title != "none" }
     
-    var count: Int {
-        guard let children = children else { return 1 }
-        return 1 + children.reduce(0) { $0 + $1.count }
-    }
-    
-    func find(_ title: String) -> Category? {
-        if self.title == title {
-            return self
-        }
-        guard let children = children else {
-            return nil
-        }
-        
-        for child in children {
-            if let match = child.find(title) {
-                return match
-            }
-        }
-        return nil
-    }
+    var isEmpty: Bool { !isSelected }
     
     var parentNode: Category? {
         return Category.rootNode.findParent(title, parentNode: nil)
@@ -83,17 +66,5 @@ extension Category {
             }
         }
         return nil
-    }
-}
-
-extension Category: Equatable {
-    static func == (lhs: Category, rhs: Category) -> Bool {
-        return lhs.title == rhs.title && lhs.children == rhs.children
-    }
-}
-extension Category: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(children)
     }
 }

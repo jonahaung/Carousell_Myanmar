@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIImage {
+    
     func withBackground(color: UIColor, opaque: Bool = true) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
         

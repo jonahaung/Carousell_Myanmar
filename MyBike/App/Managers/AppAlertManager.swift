@@ -5,7 +5,7 @@
 //  Created by Aung Ko Min on 23/12/21.
 //
 
-import Foundation
+import SwiftUI
 
 final class AppAlertManager: ObservableObject {
     
@@ -13,4 +13,18 @@ final class AppAlertManager: ObservableObject {
     
     @Published var alert = AlertObject(show: false)
     
+    @Published var notification: NotificationBadge.Notification = .init("", .Success)
+    
+    var isSearching = false {
+        willSet {
+            guard newValue != isSearching else { return }
+            withAnimation(.interactiveSpring()) {
+                objectWillChange.send()
+            }
+        }
+    }
+    
+    func onComfirm(buttonText: String, _ done: @escaping () -> Void, cancel: (() -> Void)? = nil) {
+        alert = AlertObject(buttonText: buttonText, action: done, cancelAction: cancel)
+    }
 }

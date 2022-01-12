@@ -9,48 +9,48 @@ import SwiftUI
 import MapKit
 
 struct SellView: View {
+
+    var presented: Binding<Bool>
     
-    enum Field {
-        case title, price, description, phoneNumber
-    }
+    @State private var sellingItem = SellingItem()
     @FocusState private var focusedField: Field?
-    
-    @Environment(\.presentationMode) private var presentationMode
-    @EnvironmentObject var authenticationService: AuthenticationService
+    @EnvironmentObject private var authenticationService: AuthenticationService
+    @StateObject private var appAlertManager = AppAlertManager.shared
     @StateObject private var itemSeller = ItemSeller()
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             Form {
-                SellImagesSection(itemSeller: itemSeller)
+                SellImagesSection(sellingItem: $sellingItem)
                 Section {
-                    FormCell(text: "Category", rightView: Text(itemSeller.category.title).anyView)
-                        .tapToPush(CategoryPickerView(category: $itemSeller.category).anyView)
+                    FormCell("Category") { Text(sellingItem.category.title)}
+                    .tapToPush(CategoryPickerView(category: $sellingItem.category))
                     
-                    FormCell(text: "Title      ", rightView: TextField("Polygon Siskiu D7 2022 M 29er", text: $itemSeller.title).anyView)
-                        .autocapitalization(.words)
-                        .focused($focusedField, equals: .title)
+                    FormCell("Title      ") { TextField("Polygon Siskiu D7 2022 M 29er", text: $sellingItem.title)}
+                    .autocapitalization(.words)
+                    .focused($focusedField, equals: .title)
                     
-                    FormCell(text: "Price      ", rightView: TextField("$0000", text: $itemSeller.price).anyView)
-                        .keyboardType(.numbersAndPunctuation)
-                        .focused($focusedField, equals: .price)
+                    FormCell("Price      ") { TextField("$0000", text: $sellingItem.price)}
+                    .keyboardType(.numbersAndPunctuation)
+                    .focused($focusedField, equals: .price)
                 }
                 
                 Section {
-                    Picker("Condition", selection: $itemSeller.condition) {
+                    Picker("Condition", selection: $sellingItem.condition) {
                         ForEach(Item.Condition.allCases) {
-                            Text($0.description)
-                                .font(.Serif())
-                                .foregroundStyle(.primary)
+                            
+                            let elements = $0.uiElements()
+                            
+                            Label($0.description, systemImage: elements.iconName).foregroundColor(elements.color).tag($0)
                         }
                     }
                     .foregroundStyle(.secondary)
                     
-                    Picker("Dealing Type", selection: $itemSeller.dealType) {
-                        ForEach(Item.DealType.allCases) {
-                            Text($0.description)
-                                .font(.Serif())
-                                .foregroundStyle(.primary)
+                    Picker("Dealing Type", selection: $sellingItem.dealType) {
+                        ForEach(Item.ExchangeType.allCases, id: \.self) {
+                            Text($0.rawValue)
+                                .foregroundColor(.accentColor)
+                                .tag($0)
                         }
                     }
                     .foregroundStyle(.secondary)
@@ -61,8 +61,7 @@ struct SellView: View {
                         Text("Description")
                             .foregroundColor(.secondary)
                         
-                        TextEditor(text: $itemSeller.detailText)
-                            .font(.Serif())
+                        TextEditor(text: $sellingItem.detailText)
                             .listRowSeparator(.hidden)
                             .focused($focusedField, equals: .description)
                     }
@@ -70,13 +69,13 @@ struct SellView: View {
                 
                 
                 Section {
-                    FormCell(text: "State", rightView: SellAddressSection(address: $itemSeller.address).anyView)
-                        .tapToPush(regionPicker.anyView)
+                    FormCell("State"){ SellAddressSection(address: $sellingItem.address)}
+                    .tapToPush(regionPicker)
                     
-                    FormCell(text: "Phone Numnber", rightView: TextField("Phone Number", text: .constant("")).anyView)
-                        .textContentType(.telephoneNumber)
-                        .keyboardType(.phonePad)
-                        .focused($focusedField, equals: .phoneNumber)
+                    FormCell("Phone Numnber") { TextField("Phone Number", text: .constant(""))}
+                    .textContentType(.telephoneNumber)
+                    .keyboardType(.phonePad)
+                    .focused($focusedField, equals: .phoneNumber)
                 }
                 
                 Section{
@@ -86,26 +85,29 @@ struct SellView: View {
             submitButton
         }
         .navigationBarTitle("Sell")
-        .navigationBarItems(leading: navBarLeadingView, trailing: navBarTrailingView)
+        .navigationBarItems(leading: navBarLeadingView)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 toolBarContent
             }
         }
+        .confirmationAlert($appAlertManager.alert)
     }
     
     private var regionPicker: some View {
-        RegionPicker(address: $itemSeller.address)
+        RegionPicker(address: sellingItem.address) {
+            sellingItem.address = $0
+        }
     }
     private var submitButton: some View {
         Group {
-            if itemSeller.isValidated {
+            if sellingItem.isValidated {
                 Button {
                     hideKeyboard()
                     AppAlertManager.shared.alert = AlertObject(buttonText: "Publish this item", action: {
                         if let person = authenticationService.currentUserViewModel?.person {
-                            itemSeller.publish(person: person) {
-                                presentationMode.wrappedValue.dismiss()
+                            itemSeller.publish(sellingItem: sellingItem, person: person) {
+                                presented.wrappedValue = false
                             }
                         }
                     })
@@ -118,22 +120,16 @@ struct SellView: View {
         }
     }
     
-    private var navBarTrailingView: some View {
-        HStack {
-            ProgressView().opacity(itemSeller.showLoading ? 1 : 0)
-            
-            Button("Close") {
-                itemSeller.onClose {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            }
-        }
-    }
     private var navBarLeadingView: some View {
         HStack {
             Button("Reset") {
-                
+                AppAlertManager.shared.onComfirm(buttonText: "Reset Anyway") {
+                    withAnimation {
+                        sellingItem.reset()
+                    }
+                }
             }
+            .disabled(sellingItem.isEmpty)
         }
     }
     
@@ -145,4 +141,12 @@ struct SellView: View {
             }
         }
     }
+}
+
+extension SellView {
+
+    enum Field {
+        case title, price, description, phoneNumber
+    }
+    
 }

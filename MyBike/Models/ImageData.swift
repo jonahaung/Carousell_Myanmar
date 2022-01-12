@@ -8,6 +8,7 @@
 import Foundation
 
 struct ImageData: Codable, Identifiable, Hashable {
+    
     var id: String {
         file_path
     }

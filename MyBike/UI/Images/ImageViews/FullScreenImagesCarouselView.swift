@@ -10,7 +10,7 @@ import SwiftUI
 
 struct FullScreenImagesCarouselView : View {
     
-    let imageDatas: [ImageData]
+    @State var imageDatas: [ImageData]
     @Binding var selectedData: ImageData
     @State private var scale: CGFloat = 1.0
     
@@ -30,7 +30,8 @@ struct FullScreenImagesCarouselView : View {
             }
             
         }
-        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .tabViewStyle(.page(indexDisplayMode: .always))
+        .indexViewStyle(.page(backgroundDisplayMode: .interactive))
         .overlay(alignment: .topTrailing) {
             Button("Done") {
                 presentationMode.wrappedValue.dismiss()
@@ -38,8 +39,7 @@ struct FullScreenImagesCarouselView : View {
             .padding()
             .accentColor(.white)
         }
-        .background(Rectangle().fill(Color.black)
-                        .edgesIgnoringSafeArea(.all))
+        .background(Rectangle().fill(Color.black).edgesIgnoringSafeArea(.all))
     }
     private var magnificationGesture: some Gesture {
         MagnificationGesture()

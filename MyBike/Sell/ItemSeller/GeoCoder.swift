@@ -25,6 +25,21 @@ final class GeoCoder {
         }
     }
     
+    static func getAddress(from location: CLLocation) async -> Item.Address? {
+        
+        guard let placemarks = try? await CLGeocoder().reverseGeocodeLocation(location), let placemark = placemarks.first else {
+            return nil
+
+        }
+
+        guard let township = placemark.locality, let state = placemark.administrativeArea else {
+            return nil
+        }
+        return Item.Address(state: state, township: township)
+    }
+    
+    
+    
     static func getAddress(from location: CLLocation, _ completion: @escaping (_ address: Item.Address?, _ error: Error?) -> ()) {
         CLGeocoder().reverseGeocodeLocation(location) {
             guard let placemark = $0?.first, let township = placemark.locality, let state = placemark.administrativeArea else {

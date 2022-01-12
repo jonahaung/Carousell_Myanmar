@@ -13,8 +13,12 @@ struct ImageCarouselView: View {
     @State private var selectedData: ImageData
     @State private var showFullScreen = false
     
-    init(_ imageDatas: [ImageData], _ selectedUrl: String) {
+    init(_ imageDatas: [ImageData], _ selectedUrl: String? = nil) {
         self.imageDatas = imageDatas
+        guard let selectedUrl = selectedUrl else {
+            selectedData = imageDatas.first!
+            return
+        }
         self.selectedData = ImageData(file_path: selectedUrl)
     }
     
@@ -25,19 +29,13 @@ struct ImageCarouselView: View {
     
     var body: some View {
         TabView(selection: $selectedData) {
-            ForEach(imageDatas) { imageData in
-                Group {
-                    GeometryReader { geo in
-                        let width = geo.size.width
-                        let size = PosterStyle.Size.custom(width)
-                        ItemImageView(imageData.file_path, size).onTapGesture {
-                            showFullScreen = true
-                        }
-                    }
-                }.tag(imageData)
+            ForEach(imageDatas, id: \.self) { imageData in
+                ItemImageView(imageData.file_path, .big).onTapGesture {
+                    showFullScreen = true
+                }
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .tabViewStyle(.page)
         .fullScreenCover(isPresented: $showFullScreen) {
             FullScreenImagesCarouselView(imageDatas: imageDatas, selectedData: $selectedData)
         }
